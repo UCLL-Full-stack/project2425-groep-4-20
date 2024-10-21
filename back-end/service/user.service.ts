@@ -1,41 +1,38 @@
 import { User } from '../model/user';
+import userRepository from '../repository/user.db';
 import { Playlist } from '../model/playlist';
 
-export class UserService {
-    private users: User[] = [];
+const getAllUsers = (): User[] => {
+    return userRepository.getAllUsers();
+};
 
-    getAllUsers(): User[] {
-        return this.users;
+const getUserById = async (id: number): Promise<User | null> => {
+    const user = await userRepository.getUserById({ id });
+    if (!user) {
+        throw new Error(`User with id ${id} does not exist.`);
     }
+    return user;
+};
 
-    getUserById(id: number): User | undefined {
-        return this.users.find(user => user.getId() === id);
-    }
+const createUser = (username: string, email: string): User => {
+    const newUser = { username, email };
+    return userRepository.createUser(newUser);
+};
 
-    createUser(username: string, email: string): User {
-        const newUser = new User({ username, email });
-        this.users.push(newUser);
-        return newUser;
-    }
+// const addPlaylistToUser = (userId: number, playlist: Playlist): User | null => {
+//     const user = userRepository.addPlaylistToUser(userId, playlist);
+//     if (!user) {
+//         throw new Error(`User with id ${userId} does not exist.`);
+//     }
+//     return user;
+// };
 
-    addPlaylistToUser(userId: number, playlist: Playlist): User | undefined {
-        const user = this.getUserById(userId);
-        if (user) {
-            user.addPlaylist(playlist);
-            return user;
-        }
-        return undefined;
-    }
+// const removePlaylistFromUser = (userId: number, playlistId: number): User | null => {
+//     const user = userRepository.removePlaylistFromUser(userId, playlistId);
+//     if (!user) {
+//         throw new Error(`User or Playlist with id ${playlistId} does not exist.`);
+//     }
+//     return user;
+// };
 
-    removePlaylistFromUser(userId: number, playlistId: number): User | undefined {
-        const user = this.getUserById(userId);
-        if (user) {
-            const playlistToRemove = user.getPlaylists().find(p => p.getId() === playlistId);
-            if (playlistToRemove) {
-                user.removePlaylist(playlistToRemove);
-                return user;
-            }
-        }
-        return undefined;
-    }
-}
+export default { getAllUsers, getUserById, createUser };

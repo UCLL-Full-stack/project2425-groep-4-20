@@ -1,34 +1,37 @@
-import { User } from '../model/user';
 import { Playlist } from '../model/playlist';
+import playlistRepository from '../repository/playlist.db';
 
-export class PlaylistService {
-    private playlists: Playlist[] = []; 
+const getAllPlaylists = (): Playlist[] => {
+    return playlistRepository.getAllPlaylists();
+};
 
-    getAllPlaylists(): Playlist[] {
-        return this.playlists;
+const getPlaylistById = async (id: number): Promise<Playlist | null> => {
+    const playlist = await playlistRepository.getPlaylistById({ id });
+    if (!playlist) {
+        throw new Error(`Playlist with id ${id} does not exist.`);
     }
+    return playlist;
+};
 
-    getPlaylistById(id: number): Playlist | undefined {
-        return this.playlists.find(playlist => playlist.getId() === id);
-    }
+const createPlaylist = (title: string, description: string, user: any): Playlist => {
+    const newPlaylist = { title, description, user }; // Zorg ervoor dat het user object correct is
+    return playlistRepository.createPlaylist(newPlaylist);
+};
 
-    createPlaylist(title: string, description: string, user: User): Playlist {
-        const newPlaylist = new Playlist({ title, description, user });
-        this.playlists.push(newPlaylist);
-        return newPlaylist;
-    }
+// const updatePlaylist = (id: number, title: string, description: string): Playlist | null => {
+//     const updatedPlaylist = playlistRepository.updatePlaylist(id, { title, description });
+//     if (!updatedPlaylist) {
+//         throw new Error(`Playlist with id ${id} does not exist.`);
+//     }
+//     return updatedPlaylist;
+// };
 
-    updatePlaylist(id: number, title: string, description: string): Playlist | undefined {
-        const playlist = this.getPlaylistById(id);
-        if (playlist) {
-            return playlist;
-        }
-        return undefined;
-    }
+// const deletePlaylist = (id: number): boolean => {
+//     const deleted = playlistRepository.deletePlaylist(id);
+//     if (!deleted) {
+//         throw new Error(`Playlist with id ${id} does not exist.`);
+//     }
+//     return true;
+// };
 
-    deletePlaylist(id: number): boolean {
-        const initialLength = this.playlists.length;
-        this.playlists = this.playlists.filter(playlist => playlist.getId() !== id);
-        return this.playlists.length < initialLength;
-    }
-}
+export default { getAllPlaylists, getPlaylistById, createPlaylist};
