@@ -4,84 +4,145 @@ body {
     background-color: #f5f7fa;
     margin: 0;
     padding: 0;
-  }
-  
-  /* Header styling */
-  header {
+}
+
+/* Header styling */
+header {
     background-color: #343a40;
     color: #ffffff;
     padding: 1rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  header a {
+}
+
+header a {
     font-size: 1.8rem;
     font-weight: bold;
     text-decoration: none;
     color: #f8f9fa;
-  }
-  
-  header .nav-link {
+}
+
+header .nav-link {
     color: #ffffff;
     font-size: 1.2rem;
     margin: 0 1rem;
-  }
-  
-  header .nav-link:hover {
+}
+
+header .nav-link:hover {
     color: #ffc107;
     text-decoration: underline;
-  }
-  
-  /* Home pagina styling */
-  h1 {
+}
+
+/* Home pagina styling */
+h1 {
     font-size: 2.2rem;
     font-weight: 600;
     text-align: center;
     color: #343a40;
     margin: 2rem 0;
-  }
-  
-  /* UserOverviewTable component styling */
-  .table {
+}
+
+/* Add Playlist styling */
+h2 {
+    text-align: center;
+    color: #343a40;
+    margin: 1.5rem 0;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form div {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    border-color: #343a40;
+    outline: none;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* UserOverviewTable component styling */
+.table {
     margin: 0 auto;
     width: 90%;
     max-width: 800px;
     border-collapse: collapse;
-  }
-  
-  .table thead {
+}
+
+.table thead {
     background-color: #495057;
     color: #ffffff;
-  }
-  
-  .table th,
-  .table td {
+}
+
+.table th,
+.table td {
     padding: 0.75rem;
     text-align: left;
     border: 1px solid #dee2e6;
-  }
-  
-  .table-hover tbody tr:hover {
+}
+
+.table-hover tbody tr:hover {
     background-color: #f1f3f5;
     cursor: pointer;
-  }
-  
-  .table-hover tbody tr:active {
+}
+
+.table-hover tbody tr:active {
     background-color: #e9ecef;
-  }
-  
-  /* Responsieve aanpassingen */
-  @media (max-width: 768px) {
+}
+
+/* Responsieve aanpassingen */
+@media (max-width: 768px) {
     h1 {
-      font-size: 1.8rem;
+        font-size: 1.8rem;
     }
-  
+
     header .nav-link {
-      font-size: 1rem;
+        font-size: 1rem;
     }
-  
+
     .table {
-      width: 100%;
+        width: 100%;
     }
-  }
-  
+
+    form {
+        padding: 1rem;
+    }
+}
