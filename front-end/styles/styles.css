@@ -1,0 +1,87 @@
+/* Algemene styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Header styling */
+  header {
+    background-color: #343a40;
+    color: #ffffff;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  header a {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: #f8f9fa;
+  }
+  
+  header .nav-link {
+    color: #ffffff;
+    font-size: 1.2rem;
+    margin: 0 1rem;
+  }
+  
+  header .nav-link:hover {
+    color: #ffc107;
+    text-decoration: underline;
+  }
+  
+  /* Home pagina styling */
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    text-align: center;
+    color: #343a40;
+    margin: 2rem 0;
+  }
+  
+  /* UserOverviewTable component styling */
+  .table {
+    margin: 0 auto;
+    width: 90%;
+    max-width: 800px;
+    border-collapse: collapse;
+  }
+  
+  .table thead {
+    background-color: #495057;
+    color: #ffffff;
+  }
+  
+  .table th,
+  .table td {
+    padding: 0.75rem;
+    text-align: left;
+    border: 1px solid #dee2e6;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: #f1f3f5;
+    cursor: pointer;
+  }
+  
+  .table-hover tbody tr:active {
+    background-color: #e9ecef;
+  }
+  
+  /* Responsieve aanpassingen */
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 1.8rem;
+    }
+  
+    header .nav-link {
+      font-size: 1rem;
+    }
+  
+    .table {
+      width: 100%;
+    }
+  }
+  
