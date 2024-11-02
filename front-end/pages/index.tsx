@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react';
 import Header from '@components/Header';
 import UserOverviewTable from '@components/user/UserOverview';
 import UserService from '@services/UserService';
 import PlaylistService from '@services/PlaylistService';
-import { User, Playlist } from '@types';
-import React, { useEffect, useState } from 'react';
+import AddPlaylist from './addPlaylist';
+import { Playlist, User } from '@types';
 
 const Home: React.FC = () => {
   const [users, setUsers] = useState<Array<User>>([]);
@@ -17,7 +18,7 @@ const Home: React.FC = () => {
   };
 
   const getPlaylists = async () => {
-    const response = await PlaylistService.getAllPlaylists(); 
+    const response = await PlaylistService.getAllPlaylists();
     const json = await response.json();
     setPlaylists(json);
   };
@@ -31,6 +32,28 @@ const Home: React.FC = () => {
     setSelectedUser(user);
   };
 
+  const handleAddPlaylist = (newPlaylist: Omit<Playlist, 'id'>) => {
+    const id = playlists.length ? playlists[playlists.length - 1].id + 1 : 1;
+    const playlistWithId: Playlist = { ...newPlaylist, id };
+    setPlaylists((prev) => [...prev, playlistWithId]);
+
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => {
+        if (user.id === newPlaylist.user.id) {
+          return { ...user, playlists: [...user.playlists, playlistWithId] };
+        }
+        return user;
+      })
+    );
+
+    if (selectedUser && selectedUser.id === newPlaylist.user.id) {
+      setSelectedUser((prev) => (prev ? {
+        ...prev,
+        playlists: [...prev.playlists, playlistWithId],
+      } : null));
+    }
+  };
+
   return (
     <>
       <Header />
@@ -40,6 +63,13 @@ const Home: React.FC = () => {
           users={users} 
           selectUser={handleSelectUser} 
           playlists={playlists}
+        />
+      )}
+      {selectedUser && (
+        <AddPlaylist 
+          selectedUser={selectedUser} 
+          onAddPlaylist={handleAddPlaylist} 
+          users={users}
         />
       )}
     </>
