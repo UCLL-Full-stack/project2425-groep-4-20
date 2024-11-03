@@ -11,11 +11,11 @@ type Props = {
 const AddPlaylist: React.FC<Props> = ({ selectedUser, onAddPlaylist, users }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [username, setUsername] = useState(''); // Change userId to username
+  const [username, setUsername] = useState(''); 
 
   const handleAddPlaylist = async () => {
     if (!users) return;
-    const user = users.find(user => user.username === username); // Find user by username
+    const user = users.find(user => user.username === username);
     if (user) {
       const newPlaylist: Omit<Playlist, 'id'> = {
         title,

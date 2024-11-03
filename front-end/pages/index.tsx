@@ -58,6 +58,7 @@ const Home: React.FC = () => {
     <>
       <Header />
       <h1>Welcome to the Music Management App</h1>
+      <h2>Press on an user to add a Playlist</h2>
       {users.length > 0 && (
         <UserOverviewTable 
           users={users} 
