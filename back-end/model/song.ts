@@ -4,29 +4,29 @@ export class Song {
     private id?: number;
     private title: string;
     private genre: string;
-    private releasDate: Date;
+    private releaseDate: Date;
     private length: number;
     private album: Album;
 
-    constructor(song: { id?: number; title: string; genre: string; releasDate: Date; length: number; album: Album }) {
+    constructor(song: { id?: number; title: string; genre: string; releaseDate: Date; length: number; album: Album }) {
         this.validate(song);
 
         this.id = song.id;
         this.title = song.title;
         this.genre = song.genre;
-        this.releasDate = song.releasDate;
+        this.releaseDate = song.releaseDate;
         this.length = song.length;
         this.album = song.album;
     }
 
-    validate(song: { title: string; genre: string; releasDate: Date; length: number; album: Album }) {
+    validate(song: { title: string; genre: string; releaseDate: Date; length: number; album: Album }) {
         if (!song.title) {
             throw new Error('Title is required');
         }
         if (!song.genre) {
             throw new Error('Genre is required');
         }
-        if (!song.releasDate) {
+        if (!song.releaseDate) {
             throw new Error('ReleasDate is required');
         }
         if (!song.length) {
@@ -45,8 +45,8 @@ export class Song {
     getGenre(): string {
         return this.genre;
     }
-    getReleasDate(): Date {
-        return this.releasDate;
+    getReleaseDate(): Date {
+        return this.releaseDate;
     }
     getLength(): number {
         return this.length;
@@ -58,9 +58,19 @@ export class Song {
         return (
             this.title === song.getTitle() &&
             this.genre === song.getGenre() &&
-            this.releasDate === song.getReleasDate() &&
+            this.releaseDate === song.getReleaseDate() &&
             this.length === song.getLength() &&
             this.album.equals(song.getAlbum())
         );
+    }
+    static from(prismaSong: any): Song {
+        return new Song({
+            id: prismaSong.id,
+            title: prismaSong.title,
+            genre: prismaSong.genre,
+            releaseDate: prismaSong.releaseDate,
+            length: prismaSong.length,
+            album: Album.from(prismaSong.album),
+        });
     }
 }

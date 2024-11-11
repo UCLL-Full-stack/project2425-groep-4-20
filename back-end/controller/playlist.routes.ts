@@ -39,9 +39,13 @@ const playlistRouter = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Playlist'
  */
-const getAllPlaylists = (req: Request, res: Response) => {
-    const playlists = playlistService.getAllPlaylists();
-    res.status(200).json(playlists);
+const getAllPlaylists = async (req: Request, res: Response) => {
+    try {
+        const playlists = await playlistService.getAllPlaylists(); // Await the result
+        res.status(200).json(playlists);
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while fetching playlists', error });
+    }
 };
 
 playlistRouter.get('/', getAllPlaylists);
@@ -105,6 +109,9 @@ playlistRouter.get('/:id', getPlaylistById);
  *               description:
  *                 type: string
  *                 description: Playlist description.
+ *               userId:
+ *                 type: integer
+ *                 description: ID of the user who is creating the playlist.
  *     responses:
  *       201:
  *         description: Playlist created successfully
@@ -113,13 +120,19 @@ playlistRouter.get('/:id', getPlaylistById);
  *             schema:
  *               $ref: '#/components/schemas/Playlist'
  */
-const createPlaylist = (req: Request, res: Response) => {
-    const { title, description, user } = req.body; // Make sure to include the user details as needed
-    const newPlaylist = playlistService.createPlaylist(title, description, user);
-    res.status(201).json(newPlaylist);
+const createPlaylist = async (req: Request, res: Response) => {
+    const { title, description, userId } = req.body; // Ensure the userId is passed in the request body
+    try {
+        const newPlaylist = await playlistService.createPlaylist(title, description, userId);
+        res.status(201).json(newPlaylist);
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while creating the playlist', error });
+    }
 };
 
 playlistRouter.post('/', createPlaylist);
+
+// Uncomment the following block if you plan to implement the update and delete functionality later
 
 // /**
 //  * @swagger
@@ -158,14 +171,18 @@ playlistRouter.post('/', createPlaylist);
 //  *       404:
 //  *         description: Playlist not found
 //  */
-// const updatePlaylist = (req: Request, res: Response) => {
+// const updatePlaylist = async (req: Request, res: Response) => {
 //     const playlistId = Number(req.params.id);
 //     const { title, description } = req.body;
-//     const updatedPlaylist = playlistService.updatePlaylist(playlistId, title, description);
-//     if (updatedPlaylist) {
-//         res.status(200).json(updatedPlaylist);
-//     } else {
-//         res.status(404).send('Playlist not found');
+//     try {
+//         const updatedPlaylist = await playlistService.updatePlaylist(playlistId, title, description);
+//         if (updatedPlaylist) {
+//             res.status(200).json(updatedPlaylist);
+//         } else {
+//             res.status(404).json({ message: 'Playlist not found' });
+//         }
+//     } catch (error) {
+//         res.status(500).json({ message: 'An error occurred while updating the playlist', error });
 //     }
 // };
 
@@ -191,13 +208,17 @@ playlistRouter.post('/', createPlaylist);
 //  *       404:
 //  *         description: Playlist not found
 //  */
-// const deletePlaylist = (req: Request, res: Response) => {
+// const deletePlaylist = async (req: Request, res: Response) => {
 //     const playlistId = Number(req.params.id);
-//     const deleted = playlistService.deletePlaylist(playlistId);
-//     if (deleted) {
-//         res.status(204).send();
-//     } else {
-//         res.status(404).send('Playlist not found');
+//     try {
+//         const deleted = await playlistService.deletePlaylist(playlistId);
+//         if (deleted) {
+//             res.status(204).send();
+//         } else {
+//             res.status(404).json({ message: 'Playlist not found' });
+//         }
+//     } catch (error) {
+//         res.status(500).json({ message: 'An error occurred while deleting the playlist', error });
 //     }
 // };
 

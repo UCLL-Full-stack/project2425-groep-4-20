@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import userService from '../service/user.service';
 
 const userRouter = express.Router();
@@ -11,18 +11,15 @@ const userRouter = express.Router();
  *       type: object
  *       properties:
  *         id:
- *           type: number
+ *           type: integer
  *           format: int64
+ *           description: The unique identifier of the user
  *         username:
  *           type: string
- *           description: User's username.
+ *           description: The username of the user
  *         email:
  *           type: string
- *           description: User's email.
- *         playlists:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Playlist'
+ *           description: The email of the user
  */
 
 /**
@@ -41,9 +38,13 @@ const userRouter = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-const getAllUsers = (req: Request, res: Response) => {
-    const users = userService.getAllUsers();
-    res.status(200).json(users);
+const getAllUsers = async (req: Request, res: Response) => {
+    try {
+        const users = await userService.getAllUsers();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while fetching users', error });
+    }
 };
 
 userRouter.get('/', getAllUsers);
@@ -53,7 +54,7 @@ userRouter.get('/', getAllUsers);
  * /users/{id}:
  *   get:
  *     summary: Retrieve a user by ID
- *     description: Get details of a specific user using their ID.
+ *     description: Get details of a specific user using its ID.
  *     parameters:
  *       - in: path
  *         name: id
@@ -93,7 +94,7 @@ userRouter.get('/:id', getUserById);
  * /users:
  *   post:
  *     summary: Create a new user
- *     description: Create a new user with the provided username and email.
+ *     description: Create a new user with the provided details.
  *     requestBody:
  *       required: true
  *       content:
@@ -115,105 +116,16 @@ userRouter.get('/:id', getUserById);
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-const createUser = (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response) => {
     const { username, email } = req.body;
-    const newUser = userService.createUser(username, email);
-    res.status(201).json(newUser);
+    try {
+        const newUser = await userService.createUser(username, email);
+        res.status(201).json(newUser);
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while creating the user', error });
+    }
 };
 
 userRouter.post('/', createUser);
-
-// /**
-//  * @swagger
-//  * /users/{id}/playlists:
-//  *   post:
-//  *     summary: Add a playlist to a user
-//  *     description: Add a new playlist to the specified user.
-//  *     parameters:
-//  *       - in: path
-//  *         name: id
-//  *         required: true
-//  *         description: ID of the user to whom the playlist will be added
-//  *         schema:
-//  *           type: integer
-//  *           format: int64
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             type: object
-//  *             properties:
-//  *               title:
-//  *                 type: string
-//  *                 description: Playlist title.
-//  *               description:
-//  *                 type: string
-//  *                 description: Playlist description.
-//  *     responses:
-//  *       200:
-//  *         description: Playlist added successfully
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               $ref: '#/components/schemas/User'
-//  *       404:
-//  *         description: User not found
-//  */
-// const addPlaylistToUser = (req: Request, res: Response) => {
-//     const userId = Number(req.params.id);
-//     const { title, description } = req.body;
-
-//     const user = userService.getUserById(userId);
-//     if (user) {
-//         const newPlaylist = { title, description, user }; // Adjust as needed
-//         userService.addPlaylistToUser(userId, newPlaylist);
-//         res.status(200).json(user);
-//     } else {
-//         res.status(404).send('User not found');
-//     }
-// };
-
-// userRouter.post('/:id/playlists', addPlaylistToUser);
-
-// /**
-//  * @swagger
-//  * /users/{userId}/playlists/{playlistId}:
-//  *   delete:
-//  *     summary: Remove a playlist from a user
-//  *     description: Remove a playlist from the specified user.
-//  *     parameters:
-//  *       - in: path
-//  *         name: userId
-//  *         required: true
-//  *         description: ID of the user
-//  *         schema:
-//  *           type: integer
-//  *           format: int64
-//  *       - in: path
-//  *         name: playlistId
-//  *         required: true
-//  *         description: ID of the playlist to remove
-//  *         schema:
-//  *           type: integer
-//  *           format: int64
-//  *     responses:
-//  *       204:
-//  *         description: Playlist removed successfully
-//  *       404:
-//  *         description: User or Playlist not found
-//  */
-// const removePlaylistFromUser = (req: Request, res: Response) => {
-//     const userId = Number(req.params.userId);
-//     const playlistId = Number(req.params.playlistId);
-//     const deleted = userService.removePlaylistFromUser(userId, playlistId);
-//     if (deleted) {
-//         res.status(204).send();
-//     } else {
-//         res.status(404).send('User or Playlist not found');
-//     }
-// };
-
-// userRouter.delete('/:userId/playlists/:playlistId', removePlaylistFromUser);
 
 export { userRouter };

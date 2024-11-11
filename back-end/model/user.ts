@@ -45,4 +45,13 @@ export class User {
             this.email === user.getEmail()
         );
     }
+
+    static from(prismaUser: any): User {
+        return new User({
+            id: prismaUser.id,
+            username: prismaUser.username,
+            email: prismaUser.email,
+            playlists: prismaUser.playlists ? prismaUser.playlists.map((playlist: any) => Playlist.from(playlist)) : [],
+        });
+    }
 }

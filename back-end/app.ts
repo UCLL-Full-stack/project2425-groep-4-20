@@ -4,8 +4,11 @@ import cors from 'cors';
 import * as bodyParser from 'body-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { userRouter } from './controller/user.routes'; // Zorg ervoor dat dit pad klopt
-import { playlistRouter } from './controller/playlist.routes'; // Zorg ervoor dat dit pad klopt
+import { userRouter } from './controller/user.routes';
+import { playlistRouter } from './controller/playlist.routes'; 
+import { albumRouter } from './controller/album.routes';
+import { artistRouter } from './controller/artist.routes';
+import { songRouter } from './controller/song.routes';
 
 const app = express();
 dotenv.config();
@@ -48,6 +51,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Gebruik routers voor gebruikers en afspeellijsten
 app.use('/users', userRouter);
 app.use('/playlists', playlistRouter);
+app.use('/albums', albumRouter);
+app.use('/artists', artistRouter);
+app.use('/songs', songRouter);
 
 app.use((err: any, req: Request, res: Response) => {
     console.error(err.stack);

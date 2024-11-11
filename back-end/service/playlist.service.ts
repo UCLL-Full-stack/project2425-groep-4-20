@@ -1,37 +1,63 @@
 import { Playlist } from '../model/playlist';
-import playlistRepository from '../repository/playlist.db';
+import { PrismaClient } from '@prisma/client';
 
-const getAllPlaylists = (): Playlist[] => {
-    return playlistRepository.getAllPlaylists();
+const database = new PrismaClient();
+
+const getAllPlaylists = async (): Promise<Playlist[]> => {
+    try{
+        const result = await database.playlist.findMany({
+            include: {
+                user: true,
+                songs: true,
+            },
+        });
+        return result.map((playlistsPrisma) => Playlist.from(playlistsPrisma));
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while fetching playlists');
+    }
 };
 
 const getPlaylistById = async (id: number): Promise<Playlist | null> => {
-    const playlist = await playlistRepository.getPlaylistById({ id });
-    if (!playlist) {
-        throw new Error(`Playlist with id ${id} does not exist.`);
+    try {
+        const result = await database.playlist.findUnique({
+            where: { id },
+            include: {
+                user: true,
+                songs: true,
+            },
+        });
+        if (!result) {
+            return null; 
+        }
+        return Playlist.from(result);
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while fetching the playlist by ID');
     }
-    return playlist;
 };
+const createPlaylist = async (title: string, description: string, userId: number): Promise<Playlist> => {
+    try {
+        // Create the playlist in the database
+        const result = await database.playlist.create({
+            data: {
+                title,
+                description,
+                user: {
+                    connect: { id: userId }, // Connect the playlist to the user by userId
+                },
+            },
+            include: {
+                user: true,
+                songs: true,
+            },
+        });
 
-const createPlaylist = (title: string, description: string, user: any): Playlist => {
-    const newPlaylist = { title, description, user }; // Zorg ervoor dat het user object correct is
-    return playlistRepository.createPlaylist(newPlaylist);
+        return Playlist.from(result);
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while creating the playlist');
+    }
 };
-
-// const updatePlaylist = (id: number, title: string, description: string): Playlist | null => {
-//     const updatedPlaylist = playlistRepository.updatePlaylist(id, { title, description });
-//     if (!updatedPlaylist) {
-//         throw new Error(`Playlist with id ${id} does not exist.`);
-//     }
-//     return updatedPlaylist;
-// };
-
-// const deletePlaylist = (id: number): boolean => {
-//     const deleted = playlistRepository.deletePlaylist(id);
-//     if (!deleted) {
-//         throw new Error(`Playlist with id ${id} does not exist.`);
-//     }
-//     return true;
-// };
 
 export default { getAllPlaylists, getPlaylistById, createPlaylist};

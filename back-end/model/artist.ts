@@ -44,4 +44,12 @@ export class Artist{
             this.albums === artist.getAlbums()
         );
     }
+    static from(prismaArtist: any): Artist {
+        return new Artist({
+            id: prismaArtist.id,
+            name: prismaArtist.name,
+            birthdate: prismaArtist.birthdate,
+            albums: prismaArtist.albums ? prismaArtist.albums.map((album: any) => Album.from(album)) : [],
+        });
+    }
 }
