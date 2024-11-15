@@ -1,5 +1,6 @@
 import { Artist } from "./artist";
 import { Song } from "./song";
+import { Album as AlbumPrisma, Artist as ArtistPrisma, Song as SongPrisma } from '@prisma/client';
 
 export class Album {
     private id?: number;
@@ -55,7 +56,7 @@ export class Album {
             this.songs === album.getSongs()
         );
     }
-    static from(prismaAlbum: any): Album {
+    static from(prismaAlbum: AlbumPrisma & {artist: ArtistPrisma, songs: SongPrisma[]}): Album {
         return new Album({
             id: prismaAlbum.id,
             title: prismaAlbum.title,

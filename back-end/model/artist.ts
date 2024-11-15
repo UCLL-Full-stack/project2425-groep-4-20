@@ -1,4 +1,5 @@
 import { Album } from "./album";
+import { Artist as ArtistPrisma, Album as AlbumPrisma } from "@prisma/client";
 
 export class Artist{
     private id?: number;
@@ -44,7 +45,7 @@ export class Artist{
             this.albums === artist.getAlbums()
         );
     }
-    static from(prismaArtist: any): Artist {
+    static from(prismaArtist: ArtistPrisma & { albums?: AlbumPrisma[] }): Artist {
         return new Artist({
             id: prismaArtist.id,
             name: prismaArtist.name,
@@ -52,4 +53,5 @@ export class Artist{
             albums: prismaArtist.albums ? prismaArtist.albums.map((album: any) => Album.from(album)) : [],
         });
     }
+    
 }

@@ -1,5 +1,6 @@
 import { Song } from './song';
 import { User } from './user'; 
+import { Playlist as PlaylistPrisma, User as UserPrisma, Song as SongPrisma } from '@prisma/client';
 
 export class Playlist {
     private id?: number;
@@ -61,7 +62,7 @@ export class Playlist {
             this.songs === playlist.getSongs()
         );
     }
-    static from(prismaPlaylist: any): Playlist {
+    static from(prismaPlaylist: PlaylistPrisma & {user: UserPrisma, songs: SongPrisma[]}): Playlist {
         return new Playlist({
             id: prismaPlaylist.id,
             title: prismaPlaylist.title,

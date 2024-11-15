@@ -1,5 +1,5 @@
 import { Album } from "./album";
-
+import { Album as AlbumPrisma, Song as SongPrisma, Artist as ArtistPrisma } from "@prisma/client";
 export class Song {
     private id?: number;
     private title: string;
@@ -63,7 +63,7 @@ export class Song {
             this.album.equals(song.getAlbum())
         );
     }
-    static from(prismaSong: any): Song {
+    static from(prismaSong: SongPrisma & { album: AlbumPrisma & { artist: ArtistPrisma, songs: SongPrisma[] } }): Song {
         return new Song({
             id: prismaSong.id,
             title: prismaSong.title,
@@ -73,4 +73,5 @@ export class Song {
             album: Album.from(prismaSong.album),
         });
     }
+    
 }

@@ -7,7 +7,12 @@ const getAllSongs = async (): Promise<Song[]> => {
     try {
         const result = await database.song.findMany({
             include: {
-                album: true,
+                album: {
+                    include: {
+                        artist: true,
+                        songs: true,
+                    },
+                },
             },
         });
         return result.map((songPrisma) => Song.from(songPrisma));
@@ -22,7 +27,12 @@ const getSongById = async (id: number): Promise<Song | null> => {
         const result = await database.song.findUnique({
             where: { id },
             include: {
-                album: true,
+                album: {
+                    include: {
+                        artist: true,
+                        songs: true,
+                    },
+                },
             },
         });
         if (!result) {
