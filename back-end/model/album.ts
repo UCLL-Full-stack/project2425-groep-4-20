@@ -62,7 +62,7 @@ export class Album {
             title: prismaAlbum.title,
             releaseDate: prismaAlbum.releaseDate,
             artist: Artist.from(prismaAlbum.artist),
-            songs: prismaAlbum.songs ? prismaAlbum.songs.map((song: any) => Song.from(song)) : [],
+            songs: prismaAlbum.songs ? prismaAlbum.songs.map((song: SongPrisma) => Song.from(song)) : [],
         });
     }
 }

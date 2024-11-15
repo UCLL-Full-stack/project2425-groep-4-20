@@ -48,39 +48,48 @@ const main = async () => {
             genre: 'Rock',
             releaseDate: new Date('2010-06-22'),
             length: 240,
-            albumId: album1.id,
+            album: {
+                connect: { id: album1.id }, // connect the album via its ID
+            },
         },
     });
-
+    
     const song2 = await prisma.song.create({
         data: {
             title: 'Eternal Rhythm',
             genre: 'Rock',
             releaseDate: new Date('2010-06-22'),
             length: 200,
-            albumId: album1.id,
+            album: {
+                connect: { id: album1.id }, // same for album2, connect to existing album
+            },
         },
     });
-
+    
     const song3 = await prisma.song.create({
         data: {
             title: 'Soul Harmony',
             genre: 'Jazz',
             releaseDate: new Date('2015-03-18'),
             length: 300,
-            albumId: album2.id,
+            album: {
+                connect: { id: album2.id },
+            },
         },
     });
-
+    
     const song4 = await prisma.song.create({
         data: {
             title: 'Tranquil Beats',
             genre: 'Ambient',
             releaseDate: new Date('2015-03-18'),
             length: 180,
-            albumId: album2.id,
+            album: {
+                connect: { id: album2.id },
+            },
         },
     });
+    
 
     // Create Users
     const user1 = await prisma.user.create({
