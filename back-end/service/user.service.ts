@@ -1,61 +1,31 @@
-import { User } from '../model/user';
-import { PrismaClient } from '@prisma/client';
+import userRepository from '../repository/user.db';
 
-const database = new PrismaClient();
-
-const getAllUsers = async (): Promise<User[]> => {
+const getAllUsers = async () => {
     try {
-        const result = await database.user.findMany(
-            {
-                include: {
-                    playlists: {
-                        include: {
-                            songs: true,
-                        },
-                    },
-                },
-            },
-        );
-        return result.map((user) => User.from(user));
+        const users = await userRepository.getAllUsers();
+        return users;
     } catch (error) {
         console.error(error);
         throw new Error('An error occurred while fetching users');
     }
 };
 
-const getUserById = async (id: number): Promise<User | null> => {
+const getUserById = async (id: number) => {
     try {
-        const result = await database.user.findUnique({
-            where: { id },
-            include: {
-                playlists: {
-                    include: {
-                        songs: true,
-                    },
-                },
-            },
-        });
-        if (!result) {
-            return null;
-        }
-        return User.from(result);
+        const user = await userRepository.getUserById(id);
+        return user;
     } catch (error) {
         console.error(error);
         throw new Error('An error occurred while fetching the user by ID');
     }
 };
 
-
 const createUser = async (username: string, email: string) => {
     try {
-        const newUser = await database.user.create({
-            data: {
-                username,
-                email,
-            },
-        });
+        const newUser = await userRepository.createUser(username, email);
         return newUser;
     } catch (error) {
+        console.error(error);
         throw new Error('Error creating user');
     }
 };

@@ -1,32 +1,20 @@
 import { Album } from '../model/album';
-import { PrismaClient } from '@prisma/client';
+import * as albumRepository from '../repository/album.db'; 
 
-const database = new PrismaClient();
-
-const getAllAlbums = async (): Promise<Album[]> => {
+export const getAllAlbums = async (): Promise<Album[]> => {
     try {
-        const result = await database.album.findMany({
-            include: {
-                artist: true,
-                songs: true,
-            },
-        });
-        return result.map((albumPrisma) => Album.from(albumPrisma));
+        const result = await albumRepository.getAllAlbums();
+        return result.map((albumPrisma) => Album.from(albumPrisma)); 
     } catch (error) {
         console.error(error);
         throw new Error('An error occurred while fetching albums');
     }
 };
 
-const getAlbumById = async (id: number): Promise<Album | null> => {
+
+export const getAlbumById = async (id: number): Promise<Album | null> => {
     try {
-        const result = await database.album.findUnique({
-            where: { id },
-            include: {
-                artist: true,
-                songs: true,
-            },
-        });
+        const result = await albumRepository.getAlbumById(id);
         if (!result) {
             return null;
         }
@@ -36,5 +24,3 @@ const getAlbumById = async (id: number): Promise<Album | null> => {
         throw new Error('An error occurred while fetching the album by ID');
     }
 };
-
-export default { getAllAlbums, getAlbumById };

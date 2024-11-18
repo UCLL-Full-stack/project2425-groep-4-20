@@ -1,63 +1,33 @@
-import { Playlist } from '../model/playlist';
-import { PrismaClient } from '@prisma/client';
+import playlistRepository from '../repository/playlist.db';
 
-const database = new PrismaClient();
-
-const getAllPlaylists = async (): Promise<Playlist[]> => {
-    try{
-        const result = await database.playlist.findMany({
-            include: {
-                user: true,
-                songs: true,
-            },
-        });
-        return result.map((playlistsPrisma) => Playlist.from(playlistsPrisma));
+const getAllPlaylists = async () => {
+    try {
+        const playlists = await playlistRepository.getAllPlaylists();
+        return playlists;
     } catch (error) {
         console.error(error);
         throw new Error('An error occurred while fetching playlists');
     }
 };
 
-const getPlaylistById = async (id: number): Promise<Playlist | null> => {
+const getPlaylistById = async (id: number) => {
     try {
-        const result = await database.playlist.findUnique({
-            where: { id },
-            include: {
-                user: true,
-                songs: true,
-            },
-        });
-        if (!result) {
-            return null; 
-        }
-        return Playlist.from(result);
+        const playlist = await playlistRepository.getPlaylistById(id);
+        return playlist;
     } catch (error) {
         console.error(error);
         throw new Error('An error occurred while fetching the playlist by ID');
     }
 };
-const createPlaylist = async (title: string, description: string, userId: number): Promise<Playlist> => {
-    try {
-        // Create the playlist in the database
-        const result = await database.playlist.create({
-            data: {
-                title,
-                description,
-                user: {
-                    connect: { id: userId }, // Connect the playlist to the user by userId
-                },
-            },
-            include: {
-                user: true,
-                songs: true,
-            },
-        });
 
-        return Playlist.from(result);
+const createPlaylist = async (title: string, description: string, userId: number) => {
+    try {
+        const playlist = await playlistRepository.createPlaylist(title, description, userId);
+        return playlist;
     } catch (error) {
         console.error(error);
         throw new Error('An error occurred while creating the playlist');
     }
 };
 
-export default { getAllPlaylists, getPlaylistById, createPlaylist};
+export default { getAllPlaylists, getPlaylistById, createPlaylist };

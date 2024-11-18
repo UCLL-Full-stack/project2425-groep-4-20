@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import albumService from '../service/album.service';
+import * as albumService from '../service/album.service';
 
 const albumRouter = express.Router();
 
@@ -48,7 +48,7 @@ const albumRouter = express.Router();
  */
 const getAllAlbums = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const albums = await albumService.getAllAlbums();
+        const albums = await albumService.getAllAlbums(); 
         res.status(200).json(albums);
     } catch (error) {
         next(error);
@@ -84,7 +84,7 @@ const getAlbumById = async (req: Request, res: Response, next: NextFunction) => 
         const albumId = Number(req.params.id);
         const album = await albumService.getAlbumById(albumId);
         if (album) {
-            res.status(200).json(album);
+            res.status(200).json(album); 
         } else {
             res.status(404).json({ message: 'Album not found' });
         }

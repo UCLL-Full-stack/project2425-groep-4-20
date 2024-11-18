@@ -1,44 +1,19 @@
-import { Song } from '../model/song';
-import { PrismaClient } from '@prisma/client';
+import songRepository from '../repository/song.db';
 
-const database = new PrismaClient();
-
-const getAllSongs = async (): Promise<Song[]> => {
+const getAllSongs = async () => {
     try {
-        const result = await database.song.findMany({
-            include: {
-                album: {
-                    include: {
-                        artist: true,
-                        songs: true,
-                    },
-                },
-            },
-        });
-        return result.map((songPrisma) => Song.from(songPrisma));
+        const songs = await songRepository.getAllSongs();
+        return songs;
     } catch (error) {
         console.error(error);
         throw new Error('An error occurred while fetching songs');
     }
 };
 
-const getSongById = async (id: number): Promise<Song | null> => {
+const getSongById = async (id: number) => {
     try {
-        const result = await database.song.findUnique({
-            where: { id },
-            include: {
-                album: {
-                    include: {
-                        artist: true,
-                        songs: true,
-                    },
-                },
-            },
-        });
-        if (!result) {
-            return null;
-        }
-        return Song.from(result);
+        const song = await songRepository.getSongById(id);
+        return song;
     } catch (error) {
         console.error(error);
         throw new Error('An error occurred while fetching the song by ID');

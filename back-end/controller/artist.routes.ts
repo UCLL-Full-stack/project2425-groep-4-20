@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import artistService from '../service/artist.service';
+import * as artistService from '../service/artist.service';
 
 const artistRouter = express.Router();
 

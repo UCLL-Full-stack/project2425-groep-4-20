@@ -1,15 +1,9 @@
 import { Artist } from '../model/artist';
-import { PrismaClient } from '@prisma/client';
+import * as artistRepository from '../repository/artist.db';
 
-const database = new PrismaClient();
-
-const getAllArtists = async (): Promise<Artist[]> => {
+export const getAllArtists = async (): Promise<Artist[]> => {
     try {
-        const result = await database.artist.findMany({
-            include: {
-                albums: true,
-            },
-        });
+        const result = await artistRepository.getAllArtists();
         return result.map((artistPrisma) => Artist.from(artistPrisma));
     } catch (error) {
         console.error(error);
@@ -17,16 +11,11 @@ const getAllArtists = async (): Promise<Artist[]> => {
     }
 };
 
-const getArtistById = async (id: number): Promise<Artist | null> => {
+export const getArtistById = async (id: number): Promise<Artist | null> => {
     try {
-        const result = await database.artist.findUnique({
-            where: { id },
-            include: {
-                albums: true,
-            },
-        });
+        const result = await artistRepository.getArtistById(id);
         if (!result) {
-            return null; // Artist not found
+            return null;
         }
         return Artist.from(result);
     } catch (error) {
@@ -34,5 +23,3 @@ const getArtistById = async (id: number): Promise<Artist | null> => {
         throw new Error('An error occurred while fetching the artist by ID');
     }
 };
-
-export default { getAllArtists, getArtistById };
