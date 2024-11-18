@@ -17,7 +17,7 @@ const Header: React.FC = () => {
         <Link href="/catalog" className="nav-link px-4 fs-5 text-white">
           Catalog
         </Link>
-        <Link href="/addPlaylist" className="nav-link px-4 fs-5 text-white">
+        <Link href="/addPlaylistt" className="nav-link px-4 fs-5 text-white">
           Add Playlist
         </Link>
       </nav>
