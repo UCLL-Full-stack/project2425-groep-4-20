@@ -1,80 +1,44 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
+import Link from 'next/link';
 import Header from '@components/Header';
-import UserOverviewTable from '@components/user/UserOverview';
-import UserService from '@services/UserService';
-import PlaylistService from '@services/PlaylistService';
-import AddPlaylist from './addPlaylist';
-import { Playlist, User } from '@types';
 
-const Home: React.FC = () => {
-  const [users, setUsers] = useState<Array<User>>([]);
-  const [playlists, setPlaylists] = useState<Array<Playlist>>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
-  const getUsers = async () => {
-    const response = await UserService.getAllUsers();
-    const json = await response.json();
-    setUsers(json);
-  };
-
-  const getPlaylists = async () => {
-    const response = await PlaylistService.getAllPlaylists();
-    const json = await response.json();
-    setPlaylists(json);
-  };
-
-  useEffect(() => {
-    getUsers();
-    getPlaylists();
-  }, []);
-
-  const handleSelectUser = (user: User) => {
-    setSelectedUser(user);
-  };
-
-  const handleAddPlaylist = (newPlaylist: Omit<Playlist, 'id'>) => {
-    const id = playlists.length ? playlists[playlists.length - 1].id + 1 : 1;
-    const playlistWithId: Playlist = { ...newPlaylist, id };
-    setPlaylists((prev) => [...prev, playlistWithId]);
-
-    setUsers((prevUsers) =>
-      prevUsers.map((user) => {
-        if (user.id === newPlaylist.user.id) {
-          return { ...user, playlists: [...user.playlists, playlistWithId] };
-        }
-        return user;
-      })
+const HomePage: React.FC = () => {
+    return (
+        <>
+            <Header />
+            <div>
+                <h1 style={styles.title}>Welcome to the Music Management App</h1>
+                <p style={styles.description}>
+                    Explore and manage your music collection, playlists, and more!
+                </p>
+            </div>
+        </>
     );
-
-    if (selectedUser && selectedUser.id === newPlaylist.user.id) {
-      setSelectedUser((prev) => (prev ? {
-        ...prev,
-        playlists: [...prev.playlists, playlistWithId],
-      } : null));
-    }
-  };
-
-  return (
-    <>
-      <Header />
-      <h1>Welcome to the Music Management App</h1>
-      <h2>Press on an user to add a Playlist</h2>
-      {users.length > 0 && (
-        <UserOverviewTable 
-          users={users} 
-          selectUser={handleSelectUser} 
-          playlists={playlists}
-        />
-      )}
-      {selectedUser && (
-        <AddPlaylist 
-          selectedUser={selectedUser} 
-          onAddPlaylist={handleAddPlaylist} 
-          users={users}
-        />
-      )}
-    </>
-  );
 };
 
-export default Home;
+const styles = {
+    container: {
+        padding: '40px',
+        textAlign: 'center',
+        backgroundColor: '#f9f9f9',
+    },
+    title: {
+        fontSize: '36px',
+        fontWeight: 'bold',
+        marginBottom: '20px',
+    },
+    description: {
+        fontSize: '18px',
+        marginBottom: '30px',
+    },
+    linkContainer: {
+        marginTop: '20px',
+    },
+    link: {
+        fontSize: '18px',
+        color: '#0070f3',
+        textDecoration: 'none',
+    },
+};
+
+export default HomePage;

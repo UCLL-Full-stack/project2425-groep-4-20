@@ -13,3 +13,24 @@ export type User = {
     playlists: Playlist[];
 };
 
+export type Song = {
+    id: number;
+    title: string;
+    genre: string;
+    releaseDate: Date;
+    length: number;
+}
+
+export type Artist = {
+    id: number;
+    name: string;
+    birthDate: Date;
+    albums: Album[];
+};
+
+export type Album = {
+    id: number;
+    title: string;
+    releaseDate: Date;
+    songs: Song[];
+};

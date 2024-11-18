@@ -8,7 +8,7 @@ type Props = {
   users: Array<User>;
 };
 
-const AddPlaylist: React.FC<Props> = ({ selectedUser, onAddPlaylist, users }) => {
+const AddPlaylistForm: React.FC<Props> = ({ selectedUser, onAddPlaylist, users }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [username, setUsername] = useState(''); 
@@ -32,6 +32,7 @@ const AddPlaylist: React.FC<Props> = ({ selectedUser, onAddPlaylist, users }) =>
   };
 
   return (
+    <>
     <div>
       <h2>Add a New Playlist</h2>
       <form onSubmit={(e) => { e.preventDefault(); handleAddPlaylist(); }}>
@@ -63,7 +64,8 @@ const AddPlaylist: React.FC<Props> = ({ selectedUser, onAddPlaylist, users }) =>
         <button type="submit">Add Playlist</button>
       </form>
     </div>
+    </>
   );
 };
 
-export default AddPlaylist;
+export default AddPlaylistForm;
