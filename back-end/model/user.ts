@@ -7,7 +7,7 @@ export class User {
     private email: string;
     private playlists: Playlist[];
 
-    constructor(user: { id?: number; username: string; email: string; playlists?: Playlist[] }) {
+    constructor(user: { id?: number; username: string; email: string; playlists: Playlist[] }) {
         this.id = user.id;
         this.username = user.username;
         this.email = user.email;
@@ -30,16 +30,6 @@ export class User {
         return this.playlists;
     }
 
-    addPlaylist(playlist: Playlist): void {
-        this.playlists.push(playlist);
-        // Zorg ervoor dat je de gebruiker in de playlist instelt, als dat nodig is
-    }
-
-    removePlaylist(playlist: Playlist): void {
-        this.playlists = this.playlists.filter(p => p.getId() !== playlist.getId());
-        // Zorg ervoor dat je de gebruiker in de playlist verwijdert, als dat nodig is
-    }
-
     equals(user: User): boolean {
         return (
             this.username === user.getUsername() &&
@@ -47,12 +37,14 @@ export class User {
         );
     }
 
-    static from(prismaUser: UserPrisma & {playlists?: PlaylistPrisma[]}): User {
+    static from({
+        id, username, email, playlists,
+    }: UserPrisma & {playlists: PlaylistPrisma[]}): User {
         return new User({
-            id: prismaUser.id,
-            username: prismaUser.username,
-            email: prismaUser.email,
-            playlists: prismaUser.playlists ? prismaUser.playlists.map((playlist: any) => Playlist.from(playlist)) : [],
+            id,
+            username,
+            email,
+            playlists: playlists.map((playlist) => Playlist.from(playlist)),
         });
     }
 }

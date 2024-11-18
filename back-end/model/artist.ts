@@ -45,12 +45,14 @@ export class Artist{
             this.albums === artist.getAlbums()
         );
     }
-    static from(prismaArtist: ArtistPrisma & { albums?: AlbumPrisma[] }): Artist {
+    static from({
+        id, name, birthdate, albums,
+    }:ArtistPrisma& { albums: AlbumPrisma[] }): Artist {
         return new Artist({
-            id: prismaArtist.id,
-            name: prismaArtist.name,
-            birthdate: prismaArtist.birthdate,
-            albums: prismaArtist.albums ? prismaArtist.albums.map((album: any) => Album.from(album)) : [],
+            id,
+            name,
+            birthdate,
+            albums: albums.map((album) => Album.from(album)),
         });
     }
     

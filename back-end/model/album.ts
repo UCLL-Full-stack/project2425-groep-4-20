@@ -1,68 +1,64 @@
-import { Artist } from "./artist";
 import { Song } from "./song";
-import { Album as AlbumPrisma, Artist as ArtistPrisma, Song as SongPrisma } from '@prisma/client';
+import { Album as AlbumPrisma, Song as SongPrisma } from '@prisma/client';
 
 export class Album {
     private id?: number;
     private title: string;
     private releaseDate: Date;
-    private artist: Artist;
     private songs: Song[];
 
-    constructor(album: { id?: number; title: string; releaseDate: Date; artist: Artist; songs: Song[] }) {
+    // Maak songs optioneel
+    constructor(album: { id?: number; title: string; releaseDate: Date; songs?: Song[] }) {
         this.validate(album);
 
         this.id = album.id;
         this.title = album.title;
         this.releaseDate = album.releaseDate;
-        this.artist = album.artist;
-        this.songs = album.songs;
+        this.songs = album.songs || []; // Gebruik een lege array als geen songs aanwezig zijn
     }
 
-    validate(album: { title: string; releaseDate: Date; artist: Artist; songs: Song[] }) {
+    validate(album: { title: string; releaseDate: Date; songs?: Song[] }) {
         if (!album.title) {
             throw new Error('Title is required');
         }
         if (!album.releaseDate) {
-            throw new Error('ReleasDate is required');
+            throw new Error('ReleaseDate is required');
         }
-        if (!album.artist) {
-            throw new Error('Artist is required');
-        }
-        if (!album.songs) {
-            throw new Error('Songs is required');
-        }
-    }
+}
+
     getId(): number | undefined {
         return this.id;
     }
+
     getTitle(): string {
         return this.title;
     }
+
     getReleaseDate(): Date {
         return this.releaseDate;
     }
-    getArtist(): Artist {
-        return this.artist;
-    }
+
     getSongs(): Song[] {
         return this.songs;
     }
+
     equals(album: Album): boolean {
         return (
             this.title === album.getTitle() &&
             this.releaseDate === album.getReleaseDate() &&
-            this.artist.equals(album.getArtist()) &&
             this.songs === album.getSongs()
         );
     }
-    static from(prismaAlbum: AlbumPrisma & {artist: ArtistPrisma, songs: SongPrisma[]}): Album {
+
+    static from({
+        id, title, releaseDate, songs,
+    }: AlbumPrisma & { songs?: SongPrisma[] }): Album {
+        // Als songs niet aanwezig is, geef een lege array door
         return new Album({
-            id: prismaAlbum.id,
-            title: prismaAlbum.title,
-            releaseDate: prismaAlbum.releaseDate,
-            artist: Artist.from(prismaAlbum.artist),
-            songs: prismaAlbum.songs ? prismaAlbum.songs.map((song: SongPrisma) => Song.from(song)) : [],
+            id,
+            title,
+            releaseDate,
+            songs: songs ? songs.map((song) => Song.from(song)) : [], // Als geen songs, lege array gebruiken
         });
     }
 }
