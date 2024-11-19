@@ -52,7 +52,7 @@ const LoginPage: React.FC = () => {
                 </form>
                 <div style={styles.footer}>
                     <p>
-                        Don't have an account? <a href="/register">Sign up</a>
+                        Don't have an account? <a href="/signup">Sign up</a>
                     </p>
                 </div>
             </div>

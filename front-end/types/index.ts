@@ -34,3 +34,34 @@ export type Album = {
     releaseDate: Date;
     songs: Song[];
 };
+
+export type SongWithRelations = Song & {
+    album: {
+        id: number;
+        title: string;
+        releaseDate: Date;
+        artist: {
+            id: number;
+            name: string;
+            birthdate: Date;
+        };
+    };
+};
+
+export type SongResponse = {
+    id: number;
+    title: string;
+    genre: string;
+    releaseDate: string;
+    length: number;
+    album: {
+        id: number;
+        title: string;
+        releaseDate: string;
+        artist: {
+            id: number;
+            name: string;
+            birthdate: string;
+        };
+    };
+};

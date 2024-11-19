@@ -1,85 +1,63 @@
 import React, { useEffect, useState } from 'react';
 import Header from '@components/Header';
-import { Song } from '@types'; // Zorg ervoor dat je het type uit @types importeert
+import { SongWithRelations } from '@types';
 import SongService from '@services/SongService';
 
 const CatalogPage: React.FC = () => {
-    const [songs, setSongs] = useState<Song[]>([]); // Gebruik het Song type uit de types
-    const [error, setError] = useState<string>('');
+  const [songs, setSongs] = useState<SongWithRelations[]>([]);
+  const [error, setError] = useState<string>('');
 
-    useEffect(() => {
-        const fetchSongs = async () => {
-            try {
-                const data = await SongService.getAllSongs(); // Haal de songs op via de service
-                setSongs(data); // Zet de opgehaalde songs in de state
-            } catch (err) {
-                setError('An error occurred while fetching songs');
-                console.error(err);
-            }
-        };
-        fetchSongs();
-    }, []);
+  useEffect(() => {
+    const fetchSongs = async () => {
+      try {
+        const data = await SongService.getAllSongs();
+        setSongs(data);
+      } catch (err) {
+        setError('An error occurred while fetching songs');
+        console.error(err);
+      }
+    };
+    fetchSongs();
+  }, []);
 
-    return (
-        <>
-            <Header />
-            <div style={styles.container}>
-                <h2>Song Catalog</h2>
-                {error && <p style={styles.error}>{error}</p>}
-                <div>
-                    {songs.length === 0 ? (
-                        <p>No songs available.</p>
-                    ) : (
-                        <table >
-                            <thead>
-                                <tr>
-                                    <th style={styles.th}>Title</th>
-                                    <th style={styles.th}>Artist</th>
-                                    <th style={styles.th}>Album</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {songs.map((song) => (
-                                    <tr key={song.id}>
-                                        <td >{song.title}</td>
-                                        
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    )}
-                </div>
-            </div>
-        </>
-    );
-};
-
-const styles = {
-    container: {
-        padding: '20px',
-        backgroundColor: '#f9f9f9',
-    },
-    error: {
-        color: 'red',
-        fontSize: '14px',
-    },
-    tableContainer: {
-        overflowX: 'auto',
-    },
-    table: {
-        width: '100%',
-        borderCollapse: 'collapse',
-        border: '1px solid #ddd',
-    },
-    th: {
-        padding: '12px',
-        backgroundColor: '#f2f2f2',
-    },
-    td: {
-        padding: '12px',
-        textAlign: 'left',
-        borderTop: '1px solid #ddd',
-    },
+  return (
+    <>
+      <Header />
+      <div className="p-6 bg-gray-100 min-h-screen">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Song Catalog</h2>
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        {songs.length === 0 ? (
+          <p className="text-gray-600">No songs available.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white shadow rounded-lg">
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Title</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Artist</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Album</th>
+                </tr>
+              </thead>
+              <tbody>
+                {songs.map((song) => (
+                  <tr
+                    key={song.id}
+                    className="hover:bg-gray-50 transition duration-200"
+                  >
+                    <td className="px-4 py-2 border-b text-sm text-gray-700">{song.title}</td>
+                    <td className="px-4 py-2 border-b text-sm text-gray-700">
+                      {song.album.artist.name}
+                    </td>
+                    <td className="px-4 py-2 border-b text-sm text-gray-700">{song.album.title}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </>
+  );
 };
 
 export default CatalogPage;
