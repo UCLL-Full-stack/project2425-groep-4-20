@@ -92,19 +92,25 @@ const main = async () => {
     
 
     // Create Users
-    const user1 = await prisma.user.create({
-        data: {
-            username: 'melody_maker',
-            email: 'melody@example.com',
-        },
-    });
+    // Create Users
+const user1 = await prisma.user.create({
+    data: {
+        username: 'melody_maker',
+        email: 'melody@example.com',
+        password: 'securepassword1', // Voeg een wachtwoord toe
+        role: 'user',
+    },
+});
 
-    const user2 = await prisma.user.create({
-        data: {
-            username: 'beat_blender',
-            email: 'beat@example.com',
-        },
-    });
+const user2 = await prisma.user.create({
+    data: {
+        username: 'beat_blender',
+        email: 'beat@example.com',
+        password: 'securepassword2',
+        role: 'admin',
+    },
+});
+
 
     // Create Playlists
     const playlist1 = await prisma.playlist.create({

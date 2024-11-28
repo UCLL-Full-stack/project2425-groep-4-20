@@ -9,8 +9,10 @@ import { playlistRouter } from './controller/playlist.routes';
 import { albumRouter } from './controller/album.routes';
 import { artistRouter } from './controller/artist.routes';
 import { songRouter } from './controller/song.routes';
+import { expressjwt } from 'express-jwt';
 
 const app = express();
+require('dotenv').config();
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
 
@@ -20,6 +22,13 @@ app.use(bodyParser.json());
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });
 });
+
+app.use(expressjwt({
+    secret: `${process.env.JWT_SECRET}`,
+    algorithms: ['HS256']
+}).unless({
+    path: ['/api-docs',  '/users/login']
+}))
 
 // Swagger definitie
 const swaggerDefinition = {
@@ -55,6 +64,7 @@ app.use('/albums', albumRouter);
 app.use('/artists', artistRouter);
 app.use('/songs', songRouter);
 
+
 app.use((err: any, req: Request, res: Response) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!' });
@@ -71,3 +81,4 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 app.listen(port, () => {
     console.log(`Back-end is running on port ${port}.`);
 });
+

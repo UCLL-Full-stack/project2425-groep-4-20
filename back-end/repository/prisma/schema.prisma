@@ -12,6 +12,13 @@ model User {
     username  String
     email     String     @unique
     playlists Playlist[]
+    password  String
+    role      Role       @default(user)
+}
+
+enum Role {
+    user
+    admin
 }
 
 model Playlist {

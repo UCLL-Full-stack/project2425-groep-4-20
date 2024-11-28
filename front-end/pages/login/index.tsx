@@ -1,21 +1,36 @@
 import Header from '@components/Header';
 import React, { useState } from 'react';
+import userService from '@services/UserService';
+import { useRouter } from 'next/router';
+
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
 
+    const router = useRouter();
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!email || !password) {
+        if (!username || !password) {
             setError('Both fields are required');
             return;
         }
 
         setError('');
 
-        console.log('Logging in with:', email, password);
+        try {
+            userService.LoginUser(username, password)
+            
+            setTimeout(() => {
+                router.push('/'); // Navigate to the homepage after delay
+            }, 2000);// Navigate to the home page if successful
+        } catch (error) {
+            console.error('Login failed:', error); // Log the error for debugging
+            alert('Login failed. Please check your credentials and try again.'); // Inform the user about the failure
+        }
+        
     };
 
     return (
@@ -27,12 +42,12 @@ const LoginPage: React.FC = () => {
                 {error && <p style={styles.error}>{error}</p>}
                 <form onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="string">Username</label>
                         <input
-                            type="email"
+                            type="string"
                             id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             required
                             style={styles.input}
                         />

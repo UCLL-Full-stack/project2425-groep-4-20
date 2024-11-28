@@ -1,8 +1,12 @@
+type Role = 'admin' | 'user';
+
 type UserInput = {
     id?: number;
     username: string;
     email: string;
     playlists?: PlaylistInput[];
+    password: string;
+    role: Role;
 };
 
 type PlaylistInput = {
@@ -37,10 +41,18 @@ type SongInput = {
     album: AlbumInput;
 };
 
+type AuthenticationResponse = {
+    token: string;
+    username: string;
+    role: Role;
+};
+
 export {
     UserInput,
     PlaylistInput,
     ArtistInput,
     AlbumInput,
     SongInput,
+    Role,
+    AuthenticationResponse,
 };

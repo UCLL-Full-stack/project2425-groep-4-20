@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import userService from '../service/user.service';
+import { UserInput } from '../types';
 
 const userRouter = express.Router();
 
@@ -117,15 +118,108 @@ userRouter.get('/:id', getUserById);
  *               $ref: '#/components/schemas/User'
  */
 const createUser = async (req: Request, res: Response) => {
-    const { username, email } = req.body;
+    const { username, email, password, role } = req.body;
     try {
-        const newUser = await userService.createUser(username, email);
+        const newUser = await userService.createUser(username, email, password, role);
         res.status(201).json(newUser);
     } catch (error) {
         res.status(500).json({ message: 'An error occurred while creating the user', error });
     }
 };
 
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Log in a user
+ *     description: Authenticate a user by providing their username/email and password.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username of the user (optional if using email).
+ *               email:
+ *                 type: string
+ *                 description: The email of the user (optional if using username).
+ *               password:
+ *                 type: string
+ *                 description: The password of the user.
+ *               role:
+ *                 type: string
+ *                 description: The role of the user (optional).
+ *             required:
+ *               - password
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: The JWT token for the authenticated user.
+ *                 username:
+ *                   type: string
+ *                   description: The username of the authenticated user.
+ *                 role:
+ *                   type: string
+ *                   description: The role of the authenticated user.
+ *       401:
+ *         description: Invalid credentials
+ *       500:
+ *         description: An error occurred during login
+ */
+const loginUser = async (req: Request, res: Response) => {
+    const { username, password , email, role} = req.body;
+    try {
+        const user = await userService.loginUser({username, password, email, role});
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while logging in', error });
+    }
+}
 userRouter.post('/', createUser);
+userRouter.post('/login', loginUser);
 
-export { userRouter };
+
+// userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//         const { username, role } = req.auth;
+
+//         const users = await userService.getAllUsers({ username }, {role});
+
+//         res.status(200).json(users);
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
+userRouter.post("/login", async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+        const userInput = <UserInput>req.body;
+
+        const response = await userService.loginUser(userInput);
+
+        const { token, username, role } = response;
+
+        res.status(200).json({
+            message : "Successfully logged in",
+            token,
+            username,
+            role
+        });
+    } catch (error) {
+        res.status(400).json({ message: "error with authentication"});
+    }
+});
+
+
+export { userRouter, loginUser };
