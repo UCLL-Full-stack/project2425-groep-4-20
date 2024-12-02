@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Playlist, User } from '@types';
-import Header from '@components/Header';
 
 type Props = {
   selectedUser?: User;

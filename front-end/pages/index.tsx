@@ -1,16 +1,17 @@
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React from 'react';
-import Link from 'next/link';
 import Header from '@components/Header';
+import { useTranslation } from 'react-i18next';
+import { GetServerSideProps } from "next";
 
 const HomePage: React.FC = () => {
+    const { t } = useTranslation('common');
     return (
         <>
             <Header />
             <div>
-                <h1 style={styles.title}>Welcome to the Music Management App</h1>
-                <p style={styles.description}>
-                    Explore and manage your music collection, playlists, and more!
-                </p>
+                <h1 style={styles.title}>{t("app.title")}</h1>
+                <p style={styles.description}>{t("app.description")}</p>
             </div>
         </>
     );
@@ -40,5 +41,13 @@ const styles = {
         textDecoration: 'none',
     },
 };
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+    return {
+      props: {
+        ...(await serverSideTranslations(locale || 'en', ['app'])),
+      },
+    };
+  };
 
 export default HomePage;
