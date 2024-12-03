@@ -7,10 +7,12 @@ export type Playlist = {
 
 
 export type User = {
-    id: number;
+    id?: number;
     username: string;
-    email: string;
-    playlists: Playlist[];
+    password : string;
+    role?: "admin" | "user";
+    email?: string;
+    playlists?: Playlist[];
 };
 
 export type Song = {
@@ -34,6 +36,11 @@ export type Album = {
     releaseDate: Date;
     songs: Song[];
 };
+
+export type StatusMessage = {
+    message:string;
+    type : "error" | "success";
+  }
 
 export type SongWithRelations = Song & {
     album: {

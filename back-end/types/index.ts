@@ -8,6 +8,10 @@ type UserInput = {
     password: string;
     role: Role;
 };
+type UserLogin = {
+    username: string;
+    password: string;
+}
 
 type PlaylistInput = {
     id?: number;
@@ -55,4 +59,5 @@ export {
     SongInput,
     Role,
     AuthenticationResponse,
+    UserLogin
 };

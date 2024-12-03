@@ -27,7 +27,12 @@ app.use(expressjwt({
     secret: `${process.env.JWT_SECRET}`,
     algorithms: ['HS256']
 }).unless({
-    path: ['/api-docs',  '/users/login']
+    path: [
+        /^\/api-docs(\/.*)?$/,  // Alle routes onder /api-docs
+        '/users/login',         // Exacte route /users/login
+        /^\/users(\/.*)?$/      // Alle routes onder /users, inclusief /users zelf
+    ]
+    
 }))
 
 // Swagger definitie

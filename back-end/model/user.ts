@@ -6,11 +6,11 @@ export class User {
     private id?: number;
     private username: string;
     private email: string;
-    private playlists: Playlist[];
+    private playlists?: Playlist[];
     private password: string;
     private role: Role;
 
-    constructor(user: { id?: number; username: string; email: string; playlists: Playlist[], password: string, role: Role }) {
+    constructor(user: { id?: number; username: string; email: string; playlists?: Playlist[], password: string, role: Role }) {
         this.id = user.id;
         this.username = user.username;
         this.email = user.email;
@@ -32,7 +32,7 @@ export class User {
     }
 
     getPlaylists(): Playlist[] {
-        return this.playlists;
+        return this.playlists || [];
     }
     getPassword(): string {
         return this.password;
@@ -49,13 +49,18 @@ export class User {
     }
 
     static from({
-        id, username, email, playlists, password, role,
-    }: UserPrisma & {playlists: PlaylistPrisma[]}): User {
+        id,
+        username,
+        email,
+        playlists,
+        password,
+        role,
+    }: UserPrisma & { playlists: PlaylistPrisma[] }): User {
         return new User({
             id,
             username,
             email,
-            playlists: playlists.map((playlist) => Playlist.from(playlist)),
+            playlists: playlists.map((playlist) => Playlist.from(playlist)), // Convert Prisma playlists
             password,
             role: role as Role,
         });

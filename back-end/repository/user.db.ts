@@ -1,5 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import { Role } from '../types';
+import { Playlist, PrismaClient } from '@prisma/client';
+import { Role, UserInput } from '../types';
+import { User } from '../model/user';
 
 const database = new PrismaClient();
 
@@ -55,20 +56,41 @@ const getUserByUsername = async (username: string) => {
     }
 };
 
-const createUser = async (username: string, email: string, password: string, role: Role) => {
+// const createUser = async ({ username, email, password, role }: UserInput): Promise<User> => {
+//     try {
+//         return await database.user.create({
+//             data: {
+//                 username,
+//                 email,
+//                 password,
+//                 role,
+//             },
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         throw new Error('An error occurred while creating the user');
+//     }
+// };
+
+const createUser = async ({ username, email, password, role, playlists }: { username: string; email: string; password: string; role: Role, playlists?: Playlist[] }): Promise<User> => {
     try {
-        return await database.user.create({
-            data: {
-                username,
-                email,
-                password,
-                role,
-            },
-        });
+      const userPrisma = await database.user.create({
+        data: {
+          username,
+          email,
+          password,
+          role,
+         
+          
+        },
+        include: {playlists: true},
+      });
+
+      return User.from(userPrisma); // Make sure User.from can handle this structure
     } catch (error) {
-        console.error(error);
-        throw new Error('An error occurred while creating the user');
+      console.error(error);
+      throw new Error("Could not create user: ${error}, check server log for more details");
     }
-};
+  };
 
 export default { getAllUsers, getUserById, createUser , getUserByUsername};

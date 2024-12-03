@@ -1,22 +1,142 @@
 import Header from '@components/Header';
+import { StatusMessage } from '@types';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import UserService from '../../services/UserService';
 
 const SignUpPage: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [username, setUsername] = useState<string>('');
     const [error, setError] = useState<string>('');
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!email || !password || !username) {
-            setError('All fields are required');
-            return;
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
+  const router = useRouter();
+
+    // const handleSubmit = (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     if (!email || !password || !username) {
+    //         setError('All fields are required');
+    //         return;
+    //     }
+
+    //     setError('');
+    //     console.log('Registering with:', email, password, username);
+    // };
+
+    const validateEmail = (email: string): boolean => {
+        // Regular expression for basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
+        return emailRegex.test(email);
+      };
+
+    const clearErrors = () => {
+        setNameError(null);
+        setEmailError(null);
+        setPasswordError(null);
+        setStatusMessages([]);
+      };
+
+      const validate = (): boolean => {
+        let result = true;
+    
+        if (!username || username.trim() === "") {
+          setNameError("Username is required");
+          result = false;
         }
+    
+        if (!email || email.trim() === "") {
+          setEmailError("Email is required");
+          result = false;
+        } else if (!validateEmail(email)) {
+          setEmailError("Invalid email format");
+          result = false;
+        }
+    
+        if (!password || password.trim() === "") {
+          setPasswordError("Password is required");
+          result = false;
+        }
+    
+        return result;
+      };
 
-        setError('');
-        console.log('Registering with:', email, password, username);
-    };
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+    
+        clearErrors();
+    
+        if (!validate()) {
+          return;
+        }
+    
+        try {
+          const response = await UserService.addUser(
+            username,
+            email,
+            password,
+          );
+    
+          if (!response) {
+            // Handle the case where response is undefined
+            setStatusMessages([
+              {
+                message: "Error creating user. Please try again later.",
+                type: "error",
+              },
+            ]);
+            return;
+          }
+    
+          if (!response.ok) {
+            // Handle unsuccessful response (status code not in the 2xx range)
+            // const errorMessage = await response.text();
+            const responseBody = await response.text();
+            const errorData = JSON.parse(responseBody);
+            setStatusMessages([
+              {
+    
+                message: errorData.errorMessage,
+                type: "error",
+              },
+            ]);
+            return;
+          }
+    
+          const userData = await response.json();
+          sessionStorage.setItem(
+            "loggedInUser",
+            JSON.stringify({
+              token: userData.token,
+              name: userData.name,
+              role: userData.role,
+            })
+          );
+    
+          setStatusMessages([
+            {
+              message: "Register successful. Redirecting to Homepage",
+              type: "success",
+            },
+          ]);
+    
+          setTimeout(() => {
+            router.push("/login");
+          }, 2000);
+        } catch (error) {
+          console.error("Error creating user:", error);
+          setStatusMessages([
+            {
+              message: "Error creating user. Please try again later.",
+              type: "error",
+            },
+          ]);
+        }
+      };
+    
 
     return (
         <>

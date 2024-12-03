@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import Language from './language/Language';
+import { use, useEffect, useState } from 'react';
 
 const Header: React.FC = () => {
+
+  const [loggedInUser, setLoggedUser] = useState<string | null>(null);
+  useEffect(() => {setLoggedUser(sessionStorage.getItem("loggedInUser"));} , []);
   return (
     <header className="bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 shadow-lg p-6">
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
@@ -12,9 +16,14 @@ const Header: React.FC = () => {
           <Link href="/" className="text-white text-lg hover:underline">
             Home
           </Link>
+          {loggedInUser && 
+          <Link href="/login" className="text-white text-lg hover:underline">
+            Logout
+          </Link>}
+          {!loggedInUser &&
           <Link href="/login" className="text-white text-lg hover:underline">
             Login
-          </Link>
+          </Link>}
           <Link href="/catalog" className="text-white text-lg hover:underline">
             Catalog
           </Link>

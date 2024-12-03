@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import userService from '../service/user.service';
-import { UserInput } from '../types';
+import { UserInput, UserLogin } from '../types';
 
 const userRouter = express.Router();
 
@@ -117,15 +117,27 @@ userRouter.get('/:id', getUserById);
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-const createUser = async (req: Request, res: Response) => {
-    const { username, email, password, role } = req.body;
-    try {
-        const newUser = await userService.createUser(username, email, password, role);
-        res.status(201).json(newUser);
-    } catch (error) {
-        res.status(500).json({ message: 'An error occurred while creating the user', error });
+// const createUser = async (req: Request, res: Response) => {
+//     const { username, email, password, role } = req.body;
+//     try {
+//         const newUser = await userService.createUser(username, email, password, role);
+//         res.status(201).json(newUser);
+//     } catch (error) {
+//         res.status(500).json({ message: 'An error occurred while creating the user', error });
+//     }
+// };
+// userRouter.post('/', createUser);
+
+userRouter.post("/", async (req: Request, res:Response) => {
+    try{
+        const user  = <UserInput>req.body;
+        const result = await userService.createUser(user);
+        res.status(200).json(result)
+    } catch (error){
+        res.status(404).json({ message: 'User not created' });
     }
-};
+
+})
 
 /**
  * @swagger
@@ -176,17 +188,38 @@ const createUser = async (req: Request, res: Response) => {
  *       500:
  *         description: An error occurred during login
  */
-const loginUser = async (req: Request, res: Response) => {
-    const { username, password , email, role} = req.body;
+userRouter.post("/login", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const user = await userService.loginUser({username, password, email, role});
-        res.status(200).json(user);
+        const userInput = <UserLogin>req.body;
+        console.log("Request Body:", userInput);
+        const response = await userService.authenticate(userInput);
+
+        // Assuming response includes a 'token' property
+        const { token, username,role } = response;
+
+        res.status(200).json({
+            message: "Authentication successful",
+            token,
+            username,
+            role
+
+        });
     } catch (error) {
-        res.status(500).json({ message: 'An error occurred while logging in', error });
+        // Log the error for debugging purposes
+        console.error("Login error:", error);
+
+        // Return a standardized error response
+        res.status(400).json({
+            status: "error",
+            errorMessage: "Invalid credentials",
+        });
+
+        // Pass the error to the next middleware for further handling (if needed)
+        next(error);
     }
-}
-userRouter.post('/', createUser);
-userRouter.post('/login', loginUser);
+});
+﻿
+
 
 
 // userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
@@ -201,25 +234,25 @@ userRouter.post('/login', loginUser);
 //     }
 // });
 
-userRouter.post("/login", async (req: Request, res: Response, next: NextFunction) => {
+// userRouter.post("/login", async (req: Request, res: Response, next: NextFunction) => {
 
-    try {
-        const userInput = <UserInput>req.body;
+//     try {
+//         const userInput = <UserInput>req.body;
 
-        const response = await userService.loginUser(userInput);
+//         const response = await userService.loginUser(userInput);
 
-        const { token, username, role } = response;
+//         const { token, username, role } = response;
 
-        res.status(200).json({
-            message : "Successfully logged in",
-            token,
-            username,
-            role
-        });
-    } catch (error) {
-        res.status(400).json({ message: "error with authentication"});
-    }
-});
+//         res.status(200).json({
+//             message : "Successfully logged in",
+//             token,
+//             username,
+//             role
+//         });
+//     } catch (error) {
+//         res.status(400).json({ message: "error with authentication"});
+//     }
+// });
 
 
-export { userRouter, loginUser };
+export { userRouter };

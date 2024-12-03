@@ -2,34 +2,104 @@ import Header from '@components/Header';
 import React, { useState } from 'react';
 import userService from '@services/UserService';
 import { useRouter } from 'next/router';
+import { StatusMessage } from '@types';
+import UserService from '@services/UserService';
 
 const LoginPage: React.FC = () => {
-    const [username, setUsername] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [error, setError] = useState<string>('');
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
-    const router = useRouter();
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
+  const router = useRouter();
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!username || !password) {
-            setError('Both fields are required');
-            return;
+
+    // const handleSubmit = (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     if (!username || !password) {
+    //         setError('Both fields are required');
+    //         return;
+    //     }
+    //     setError('');
+    //     try {
+    //         userService.LoginUser(username, password);
+
+    //         setTimeout(() => {
+    //             router.push('/');
+    //         }, 2000);
+    //     } catch (error) {
+    //         console.error('Login failed:', error);
+    //         alert('Login failed. Please check your credentials and try again.');
+    //     }
+    // };
+    
+    const clearErrors = () => {
+        setNameError(null);
+        setEmailError(null);
+        setPasswordError(null);
+        setStatusMessages([]);
+      };
+      const validate = (): boolean => {
+        let result = true;
+    
+        if (!username ||  username.trim() === "") {
+          setNameError("Name is required");
+          result = false;
+        } else if (!password || password.trim() === "") {
+          setPasswordError("Password is required");
+          result = false;
         }
+        // else if (!password.match(/[!?@#]/)){
+        //     setPasswordError("Password needs to include at least one of these characters !?@#")
+        //     result = false;
+        // }
+        return result;
+      };
 
-        setError('');
-
-        try {
-            userService.LoginUser(username, password);
-
-            setTimeout(() => {
-                router.push('/');
-            }, 2000);
-        } catch (error) {
-            console.error('Login failed:', error);
-            alert('Login failed. Please check your credentials and try again.');
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+    
+        clearErrors();
+    
+        if (!validate()) {
+          return;
         }
-    };
+    
+        const user = { username: username, password: password };
+        // console.log(user)
+        const response = await UserService.LoginUser(user);
+    
+        if (response.status === 200) {
+          const userData = await response.json();
+          console.log(userData);
+          sessionStorage.setItem(
+            "loggedInUser",
+            JSON.stringify({
+              token: userData.token,
+              name: userData.name,
+              role: userData.role,
+            })
+          );
+          setTimeout(() => {
+            router.push("/");
+          }, 2000);
+        } else if (response.status === 401) {
+          const { errorMessage } = await response.json();
+          setStatusMessages([{ message: errorMessage, type: "error" }]);
+        } else {
+          setStatusMessages([
+            {
+              message: "An error has occurred. Please try again later",
+              type: "error",
+            },
+          ]);
+        }
+      };
+    
 
     return (
         <>
