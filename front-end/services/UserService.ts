@@ -1,10 +1,13 @@
 import { User } from "@types";
 
+const token = typeof window !== "undefined" ? JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token : null;
+
 const getAllUsers = async () => {
     return await fetch(process.env.NEXT_PUBLIC_API_URL + '/users', {
       method: "GET",
       headers: {
         "Content-Type": 'application/json',
+        "Authorization": `Bearer ${token}`,
       }
     });
   };
@@ -20,7 +23,8 @@ const getAllUsers = async () => {
     });
   };
   
-  const addUser = async (username: string, password: string, email: string) => {
+  const addUser = async (username: string,  email: string, password: string) => {
+   
     return await fetch(process.env.NEXT_PUBLIC_API_URL + '/users', {
       method: "POST",
       headers: {

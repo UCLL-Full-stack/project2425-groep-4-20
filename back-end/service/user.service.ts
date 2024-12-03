@@ -45,7 +45,7 @@ const createUser = async ({
     username,
     password,
     email,
-    playlists,
+    
   }: UserInput): Promise<AuthenticationResponse> => {
     const existingUser = await userRepository.getUserByUsername(username);
   

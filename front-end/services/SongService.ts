@@ -1,10 +1,14 @@
 import { Song, SongResponse, SongWithRelations } from '@types';
 
+const token = typeof window !== "undefined" ? JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token : null;
+
+
 const getAllSongs = async (): Promise<SongWithRelations[]> => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/songs`, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`,
       },
   });
 
@@ -39,6 +43,7 @@ const addSong = async (song: Omit<Song, 'id'>) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      "Authorization": `Bearer ${token}`,
     },
     body: JSON.stringify(song),
   });

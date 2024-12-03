@@ -1,11 +1,17 @@
 import Link from 'next/link';
 import Language from './language/Language';
 import { use, useEffect, useState } from 'react';
+import router from 'next/router';
 
 const Header: React.FC = () => {
 
   const [loggedInUser, setLoggedUser] = useState<string | null>(null);
   useEffect(() => {setLoggedUser(sessionStorage.getItem("loggedInUser"));} , []);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('loggedInUser');
+    router.push('/login');
+  }
   return (
     <header className="bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 shadow-lg p-6">
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
@@ -17,19 +23,21 @@ const Header: React.FC = () => {
             Home
           </Link>
           {loggedInUser && 
-          <Link href="/login" className="text-white text-lg hover:underline">
-            Logout
-          </Link>}
+          <li>
+          <button className="text-blue-500 hover:text-blue-700" onClick={handleLogout}>Logout</button>
+        </li>}
           {!loggedInUser &&
           <Link href="/login" className="text-white text-lg hover:underline">
             Login
           </Link>}
+          {loggedInUser && 
           <Link href="/catalog" className="text-white text-lg hover:underline">
             Catalog
-          </Link>
+          </Link>}
+          {loggedInUser && 
           <Link href="/addPlaylistt" className="text-white text-lg hover:underline">
             Add Playlist
-          </Link>
+          </Link>}
         </nav>
         <div className="mt-4 md:mt-0">
           <Language />

@@ -97,7 +97,7 @@ const user1 = await prisma.user.create({
     data: {
         username: 'melody_maker',
         email: 'melody@example.com',
-        password: 'securepassword1', // Voeg een wachtwoord toe
+        password: 'p1', 
         role: 'user',
     },
 });
@@ -106,7 +106,7 @@ const user2 = await prisma.user.create({
     data: {
         username: 'beat_blender',
         email: 'beat@example.com',
-        password: 'securepassword2',
+        password: 'p2',
         role: 'admin',
     },
 });

@@ -11,6 +11,7 @@ type UserInput = {
 type UserLogin = {
     username: string;
     password: string;
+    
 }
 
 type PlaylistInput = {
