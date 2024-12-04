@@ -9,7 +9,7 @@ const userRouter = express.Router();
  * components:
  *   schemas:
  *     User:
- *       type: object
+ *       type: object   
  *       properties:
  *         id:
  *           type: integer

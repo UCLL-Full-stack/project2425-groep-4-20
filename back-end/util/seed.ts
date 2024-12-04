@@ -1,6 +1,7 @@
 // Execute: npx ts-node util/seed.ts
 
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -10,6 +11,9 @@ const main = async () => {
     await prisma.artist.deleteMany();
     await prisma.playlist.deleteMany();
     await prisma.user.deleteMany();
+
+    const hashedPassword1 = await bcrypt.hash('p1', 12);
+    const hashedPassword2 = await bcrypt.hash('p2', 12);
 
     const artist1 = await prisma.artist.create({
         data: {
@@ -97,7 +101,7 @@ const user1 = await prisma.user.create({
     data: {
         username: 'melody_maker',
         email: 'melody@example.com',
-        password: 'p1', 
+        password: hashedPassword1, 
         role: 'user',
     },
 });
@@ -106,7 +110,7 @@ const user2 = await prisma.user.create({
     data: {
         username: 'beat_blender',
         email: 'beat@example.com',
-        password: 'p2',
+        password: hashedPassword2,
         role: 'admin',
     },
 });
