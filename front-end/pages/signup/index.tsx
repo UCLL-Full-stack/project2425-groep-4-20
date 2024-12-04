@@ -59,14 +59,12 @@ const SignUpPage: React.FC = () => {
         if (!validate()) {
           return;
         }
-        console.log('Username:', username);
-        console.log('Email:', email);
-        console.log('Password:',password)
+        
         try {
           const response = await UserService.addUser(
             username,
-            email,  // Previously password
-            password,  // Previously email
+            email,  
+            password, 
           );
     
           if (!response) {
@@ -87,15 +85,7 @@ const SignUpPage: React.FC = () => {
             return;
           }
     
-          const userData = await response.json();
-          sessionStorage.setItem(
-            "loggedInUser",
-            JSON.stringify({
-              token: userData.token,
-              username: userData.username,
-              role: userData.role,
-            })
-          );
+
     
           setStatusMessages([{
             message: "Register successful. Redirecting to Homepage",
