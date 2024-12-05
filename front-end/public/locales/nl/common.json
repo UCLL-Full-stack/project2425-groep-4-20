@@ -1,7 +1,16 @@
 {
-    "app": {
-      "title": "Welkom bij de Music Management App",
-      "description": "Verken en beheer je muziekcollectie, afspeellijsten en meer!"
-    }
-  }
-  
+  "app": {
+    "title": "Welkom bij de Music Management App",
+    "description": "Verken en beheer je muziekcollectie, afspeellijsten en meer!"
+  },
+  "header": {
+  "home": "Home",
+  "login": "Inloggen",
+  "catalog": "Catalogus",
+  "addPlaylist": "Voeg afspeellijst toe"
+},
+"addplaylist": {
+  "subtitle": "Klik op een gebruiker om een afspeellijst toe te voegen",
+  "search_placeholder": "Zoek afspeellijst op titel"
+}}
+

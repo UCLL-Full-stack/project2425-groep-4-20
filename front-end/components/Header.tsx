@@ -2,8 +2,10 @@ import Link from 'next/link';
 import Language from './language/Language';
 import { use, useEffect, useState } from 'react';
 import router from 'next/router';
+import { useTranslation } from 'next-i18next';
 
 const Header: React.FC = () => {
+  const { t } = useTranslation();
 
   const [loggedInUser, setLoggedUser] = useState<string | null>(null);
   useEffect(() => {setLoggedUser(sessionStorage.getItem("loggedInUser"));} , []);
@@ -20,7 +22,7 @@ const Header: React.FC = () => {
         </a>
         <nav className="flex space-x-6">
           <Link href="/" className="text-white text-lg hover:underline">
-            Home
+          {t('header.home')}
           </Link>
           {loggedInUser && 
           <li>
@@ -28,15 +30,15 @@ const Header: React.FC = () => {
         </li>}
           {!loggedInUser &&
           <Link href="/login" className="text-white text-lg hover:underline">
-            Login
+            {t('header.login')}
           </Link>}
           {loggedInUser && 
           <Link href="/catalog" className="text-white text-lg hover:underline">
-            Catalog
+           {t('header.catalog')}
           </Link>}
           {loggedInUser && 
           <Link href="/addPlaylistt" className="text-white text-lg hover:underline">
-            Add Playlist
+           {t('header.addPlaylist')}
           </Link>}
         </nav>
         <div className="mt-4 md:mt-0">

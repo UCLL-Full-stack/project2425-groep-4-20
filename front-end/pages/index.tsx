@@ -1,11 +1,11 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React from 'react';
 import Header from '@components/Header';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from "next";
 
 const HomePage: React.FC = () => {
-    const { t } = useTranslation('common');
+    const { t } = useTranslation('');
     return (
         <>
             <Header />
@@ -42,12 +42,12 @@ const styles = {
     },
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+export const getServerSideProps = async (context: { locale: any; }) => {
+    const { locale } = context;
     return {
-      props: {
-        ...(await serverSideTranslations(locale || 'en', ['app'])),
-      },
+        props: {
+            ...(await serverSideTranslations(locale ?? "en", ["common"])),
+        },
     };
-  };
-
-export default HomePage;
+    };
+    export default HomePage;
