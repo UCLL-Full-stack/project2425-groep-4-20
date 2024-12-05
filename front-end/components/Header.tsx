@@ -26,8 +26,14 @@ const Header: React.FC = () => {
           </Link>
           {loggedInUser && 
           <li>
-          <button className="text-blue-500 hover:text-blue-700" onClick={handleLogout}>Logout</button>
-        </li>}
+          <button
+            className="text-white text-lg hover:underline"
+            onClick={handleLogout}
+          >
+            {t('header.logout')}
+          </button>
+        </li>
+        }
           {!loggedInUser &&
           <Link href="/login" className="text-white text-lg hover:underline">
             {t('header.login')}

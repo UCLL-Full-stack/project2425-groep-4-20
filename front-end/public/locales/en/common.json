@@ -7,7 +7,8 @@
   "home": "Home",
   "login": "Login",
   "catalog": "Catalog",
-  "addPlaylist": "Add Playlist"
+  "addPlaylist": "Add Playlist",
+  "logout": "logout"
 },
 "addplaylist": {
 "subtitle": "Press on a user to add a Playlist",
