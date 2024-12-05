@@ -5,16 +5,10 @@ import { useRouter } from 'next/router';
 import { StatusMessage } from '@types';
 import UserService from '@services/UserService';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { GetServerSideProps } from 'next';
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale || "en", ["common"])),
-    },
-  };
-};
+
 const LoginPage: React.FC = () => {
   const { t } = useTranslation();
     const [email, setEmail] = useState<string>('');
@@ -173,6 +167,14 @@ const LoginPage: React.FC = () => {
             </div>
         </>
     );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale || "en", ["common"])),
+    },
+  };
 };
 
 

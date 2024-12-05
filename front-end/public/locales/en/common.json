@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "Welcome to the Music Management App",
-    "description": "Explore and manage your music collection, playlists, and more!"
+    "description": "Explore and manage your music collection, playlists, and more!",
+    "getStarted": "Login"
   },
   "header": {
   "home": "Home",
@@ -13,4 +14,17 @@
 "addplaylist": {
 "subtitle": "Press on a user to add a Playlist",
   "search_placeholder": "Search Playlist by Title"
-}}
+},
+
+"login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "loginButton": "Login",
+    "noAccount": "Don't have an account?",
+    "signupLink": "Sign up",
+    "errors": {
+      "usernameRequired": "Username is required",
+      "passwordRequired": "Password is required"
+    }
+  }}

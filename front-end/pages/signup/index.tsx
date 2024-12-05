@@ -5,8 +5,8 @@ import React, { useState } from 'react';
 import UserService from '../../services/UserService';
 
 const SignUpPage: React.FC = () => {
-    const [email, setEmail] = useState<string>(''); // Previously 'password'
-    const [password, setPassword] = useState<string>(''); // Previously 'email'
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const [username, setUsername] = useState<string>('');
     const [error, setError] = useState<string>('');
     const [nameError, setNameError] = useState<string | null>(null);

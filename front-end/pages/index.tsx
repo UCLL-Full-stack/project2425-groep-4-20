@@ -2,44 +2,25 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React from 'react';
 import Header from '@components/Header';
 import { useTranslation } from 'next-i18next';
-import { GetServerSideProps } from "next";
 
 const HomePage: React.FC = () => {
-    const { t } = useTranslation('');
+    const {t} = useTranslation('');
+
     return (
         <>
             <Header />
-            <div>
-                <h1 style={styles.title}>{t("app.title")}</h1>
-                <p style={styles.description}>{t("app.description")}</p>
+            <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 flex items-center justify-center">
+                <div className="text-center px-6 py-12 max-w-3xl bg-white shadow-lg rounded-lg">
+                    <h1 className="text-4xl font-bold text-blue-800 mb-4">
+                        {t("app.title")}
+                    </h1>
+                    <p className="text-lg text-gray-700 mb-6">
+                        {t("app.description")}
+                    </p>
+                </div>
             </div>
         </>
     );
-};
-
-const styles = {
-    container: {
-        padding: '40px',
-        textAlign: 'center',
-        backgroundColor: '#f9f9f9',
-    },
-    title: {
-        fontSize: '36px',
-        fontWeight: 'bold',
-        marginBottom: '20px',
-    },
-    description: {
-        fontSize: '18px',
-        marginBottom: '30px',
-    },
-    linkContainer: {
-        marginTop: '20px',
-    },
-    link: {
-        fontSize: '18px',
-        color: '#0070f3',
-        textDecoration: 'none',
-    },
 };
 
 export const getServerSideProps = async (context: { locale: any; }) => {
@@ -50,4 +31,5 @@ export const getServerSideProps = async (context: { locale: any; }) => {
         },
     };
     };
-    export default HomePage;
+
+export default HomePage;

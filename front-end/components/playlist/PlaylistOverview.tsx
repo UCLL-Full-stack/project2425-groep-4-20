@@ -25,16 +25,7 @@ const UserOverviewTable: React.FC<Props> = ({ users, selectUser, playlists }: Pr
     <>
       {users && (
         <>
-        {/* Zoekbalk */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search by username or email..."
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+        
       <div className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
           <table className="table w-full table-hover">
             <thead className="bg-yellow-300">

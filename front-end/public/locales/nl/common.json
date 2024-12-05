@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "Welkom bij de Music Management App",
-    "description": "Verken en beheer je muziekcollectie, afspeellijsten en meer!"
+    "description": "Verken en beheer je muziekcollectie, afspeellijsten en meer!",
+    "getStarted": "Inloggen"
   },
   "header": {
   "home": "Home",
@@ -13,5 +14,18 @@
 "addplaylist": {
   "subtitle": "Klik op een gebruiker om een afspeellijst toe te voegen",
   "search_placeholder": "Zoek afspeellijst op titel"
-}}
+},
+
+"login": {
+    "title": "Inloggen",
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord",
+    "loginButton": "Inloggen",
+    "noAccount": "Heb je nog geen account?",
+    "signupLink": "Aanmelden",
+    "errors": {
+      "usernameRequired": "Gebruikersnaam is verplicht",
+      "passwordRequired": "Wachtwoord is verplicht"
+    }
+  }}
 

@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Header from '@components/Header';
 import { SongWithRelations } from '@types';
 import SongService from '@services/SongService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 
 const CatalogPage: React.FC = () => {
+  const { t } = useTranslation('');
+
   const [songs, setSongs] = useState<SongWithRelations[]>([]);
   const [filteredSongs, setFilteredSongs] = useState<SongWithRelations[]>([]);
   const [error, setError] = useState<string>('');
@@ -85,5 +89,13 @@ const CatalogPage: React.FC = () => {
     </>
   );
 };
+export const getServerSideProps = async (context: { locale: any; }) => {
+  const { locale } = context;
+  return {
+      props: {
+          ...(await serverSideTranslations(locale ?? "en", ["common"])),
+      },
+  };
+  };
 
 export default CatalogPage;
