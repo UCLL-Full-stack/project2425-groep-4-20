@@ -25,6 +25,18 @@ const Header: React.FC = () => {
           {t('header.home')}
           </Link>
           {loggedInUser && 
+          <Link href="/catalog" className="text-white text-lg hover:underline">
+           {t('header.catalog')}
+          </Link>}
+          {loggedInUser && 
+          <Link href="/addPlaylistt" className="text-white text-lg hover:underline">
+           {t('header.addPlaylist')}
+          </Link>}
+          {loggedInUser && 
+          <Link href="/song" className="text-white text-lg hover:underline">
+          {t('header.song', { defaultValue: 'Songs' })}
+        </Link>}
+          {loggedInUser && 
           <li>
           <button
             className="text-white text-lg hover:underline"
@@ -37,14 +49,6 @@ const Header: React.FC = () => {
           {!loggedInUser &&
           <Link href="/login" className="text-white text-lg hover:underline">
             {t('header.login')}
-          </Link>}
-          {loggedInUser && 
-          <Link href="/catalog" className="text-white text-lg hover:underline">
-           {t('header.catalog')}
-          </Link>}
-          {loggedInUser && 
-          <Link href="/addPlaylistt" className="text-white text-lg hover:underline">
-           {t('header.addPlaylist')}
           </Link>}
         </nav>
         <div className="mt-4 md:mt-0">

@@ -3,8 +3,11 @@ import { StatusMessage } from '@types';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import UserService from '../../services/UserService';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'next-i18next';
 
 const SignUpPage: React.FC = () => {
+  const {t} = useTranslation('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [username, setUsername] = useState<string>('');
@@ -182,5 +185,13 @@ const SignUpPage: React.FC = () => {
         </>
     );
 };
+export const getServerSideProps = async (context: { locale: any; }) => {
+  const { locale } = context;
+  return {
+      props: {
+          ...(await serverSideTranslations(locale ?? "en", ["common"])),
+      },
+  };
+  };
 
 export default SignUpPage;

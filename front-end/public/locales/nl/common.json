@@ -9,7 +9,8 @@
   "login": "Inloggen",
   "catalog": "Catalogus",
   "addPlaylist": "Voeg afspeellijst toe",
-  "logout": "Uitloggen"
+  "logout": "Uitloggen",
+  "song": "Liedjes"
 },
 "addplaylist": {
   "subtitle": "Klik op een gebruiker om een afspeellijst toe te voegen",

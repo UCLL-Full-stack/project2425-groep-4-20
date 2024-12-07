@@ -1,101 +1,108 @@
-import React, { useEffect, useState } from 'react';
+import AddSongToPlaylist from '@components/catalog/AddSongToPlaylist';
+import PlaylistCatalog from '@components/catalog/PlaylistCatalog';
 import Header from '@components/Header';
-import { SongWithRelations } from '@types';
+import PlaylistService from '@services/PlaylistService';
 import SongService from '@services/SongService';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { SongWithRelations } from '@types';
+import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import React, { useEffect, useState } from 'react';
 
-const CatalogPage: React.FC = () => {
-  const { t } = useTranslation('');
-
+const IndexPage = () => {
+  const { t } = useTranslation();
+  const [playlists, setPlaylists] = useState<{ id: number; title: string; description: string; user: { username: string }; songs: { id: number; title: string; album: { title: string } }[] }[]>([]);
   const [songs, setSongs] = useState<SongWithRelations[]>([]);
-  const [filteredSongs, setFilteredSongs] = useState<SongWithRelations[]>([]);
-  const [error, setError] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedPlaylist, setSelectedPlaylist] = useState<number | null>(null);
+  const [selectedSong, setSelectedSong] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchSongs = async () => {
-      try {
-        const data = await SongService.getAllSongs();
-        setSongs(data);
-        setFilteredSongs(data);
-      } catch (err) {
-        setError('An error occurred while fetching songs');
-        console.error(err);
-      }
+    const fetchPlaylistsAndSongs = async () => {
+      const playlistResponse = await PlaylistService.getAllPlaylists();
+      const playlistData = await playlistResponse.json();
+      setPlaylists(playlistData);
+
+      const songResponse = await SongService.getAllSongs();
+      setSongs(songResponse);
     };
-    fetchSongs();
+
+    fetchPlaylistsAndSongs();
   }, []);
 
-  useEffect(() => {
-    if (searchQuery) {
-      const filtered = songs.filter((song) =>
-        song.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredSongs(filtered);
+  const handleAddSong = async () => {
+    if (selectedPlaylist !== null && selectedSong !== null) {
+      await PlaylistService.addSongToPlaylist(selectedPlaylist, selectedSong);
+
+      const updatedPlaylistsResponse = await PlaylistService.getAllPlaylists();
+      const updatedPlaylists = await updatedPlaylistsResponse.json();
+      setPlaylists(updatedPlaylists);
+
+      alert('Song successfully added to playlist!');
     } else {
-      setFilteredSongs(songs);
+      alert('Please select both a playlist and a song');
     }
-  }, [searchQuery, songs]);
+  };
 
   return (
     <>
       <Header />
-      <div className="p-6 bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 min-h-screen">
-        <h2 className="text-3xl font-semibold text-blue-800 mb-6 text-center">Song Catalog</h2>
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 p-8">
+        <h1 className="text-4xl font-bold text-center text-blue-600 mb-8">Playlist Catalog</h1>
 
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-        <div className="flex justify-center mb-6">
-          <input
-            type="text"
-            placeholder="Search Song by Title"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-4 py-2 w-full max-w-lg border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {filteredSongs.length === 0 ? (
-          <p className="text-gray-600 text-center">No songs available.</p>
-        ) : (
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-6xl mx-auto">
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white shadow rounded-lg">
+            <table className="min-w-full table-auto">
               <thead>
-                <tr className="bg-blue-100">
-                  <th className="px-4 py-2 text-left text-sm font-medium text-blue-700">Title</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-blue-700">Artist</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-blue-700">Album</th>
+                <tr className="bg-blue-500 text-white">
+                  <th className="px-4 py-2 text-left">Playlist</th>
+                  <th className="px-4 py-2 text-left">User</th>
+                  <th className="px-4 py-2 text-left">Songs</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredSongs.map((song) => (
-                  <tr
-                    key={song.id}
-                    className="hover:bg-blue-50 transition duration-200"
-                  >
-                    <td className="px-4 py-2 border-b text-sm text-blue-700">{song.title}</td>
-                    <td className="px-4 py-2 border-b text-sm text-blue-700">
-                      {song.album.artist.name}
+                {playlists.map((playlist) => (
+                  <tr key={playlist.id} className="border-b hover:bg-blue-50">
+                    <td className="px-4 py-2">{playlist.title}</td>
+                    <td className="px-4 py-2">{playlist.user.username}</td>
+                    <td className="px-4 py-2">
+                      {playlist.songs.length > 0 ? (
+                        <ul className="list-disc pl-6">
+                          {playlist.songs.map((song) => (
+                            <li key={song.id} className="text-gray-700">{song.title}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span className="text-gray-500">No songs in this playlist.</span>
+                      )}
                     </td>
-                    <td className="px-4 py-2 border-b text-sm text-blue-700">{song.album.title}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        )}
+
+          <div className="mt-8">
+            <PlaylistCatalog playlists={playlists} setSelectedPlaylist={setSelectedPlaylist} />
+            <AddSongToPlaylist songs={songs} setSelectedSong={setSelectedSong} />
+            <button
+              onClick={handleAddSong}
+              className="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition duration-300"
+            >
+              Add Song to Playlist
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );
 };
-export const getServerSideProps = async (context: { locale: any; }) => {
-  const { locale } = context;
-  return {
-      props: {
-          ...(await serverSideTranslations(locale ?? "en", ["common"])),
-      },
-  };
-  };
 
-export default CatalogPage;
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale || "en", ["common"])),
+    },
+  };
+};
+
+export default IndexPage;

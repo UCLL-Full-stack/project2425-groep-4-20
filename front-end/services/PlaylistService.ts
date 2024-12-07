@@ -10,7 +10,7 @@ const getAllPlaylists = async () => {
     });
   };
 
-const addPlaylist = async (playlist: Omit<Playlist, 'id'>) => {
+  const addPlaylist = async (playlist: Omit<Playlist, 'id'>) => {
     return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists`, {
       method: 'POST',
       headers: {
@@ -21,9 +21,30 @@ const addPlaylist = async (playlist: Omit<Playlist, 'id'>) => {
     });
   };
   
+
+  const addSongToPlaylist = async (playlistId: number, songId: number) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/${playlistId}/songs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ songId }),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to add song to playlist');
+    }
+  
+    return response.json();
+  };
+
+
+  
   const PlaylistService = {
     getAllPlaylists,
     addPlaylist,
+    addSongToPlaylist,
   };
   
   export default PlaylistService;

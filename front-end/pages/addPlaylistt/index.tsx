@@ -1,136 +1,201 @@
-import { useEffect, useState } from 'react';
-import Header from '@components/Header';
-import UserOverviewTable from '@components/playlist/PlaylistOverview';
-import UserService from '@services/UserService';
-import PlaylistService from '@services/PlaylistService';
-import AddPlaylist from '@components/playlist/AddPlaylistForm';
-import { Playlist, User } from '@types';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTranslation } from 'next-i18next';
+import React, { useState, useEffect } from "react";
+import PlaylistService from "@services/PlaylistService";
+import { Playlist } from "@types";
+import Header from "@components/Header";
+import { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "react-i18next";
 
-const Add: React.FC = () => {
-  const { t } = useTranslation('common');
-  const [users, setUsers] = useState<Array<User>>([]);
-  const [playlists, setPlaylists] = useState<Array<Playlist>>([]);
-  const [filteredUsers, setFilteredUsers] = useState<Array<User>>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+const AddPlaylistPage = () => {
+  const { t } = useTranslation();
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [filteredPlaylists, setFilteredPlaylists] = useState<Playlist[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const getUsers = async () => {
-    const response = await UserService.getAllUsers();
-    const json = await response.json();
-    setUsers(json);
-  };
-
-  const getPlaylists = async () => {
-    const response = await PlaylistService.getAllPlaylists();
-    const json = await response.json();
-    setPlaylists(json || []);
-  };
+  const [newPlaylistTitle, setNewPlaylistTitle] = useState<string>("");
+  const [newPlaylistDescription, setNewPlaylistDescription] = useState<string>("");
+  const [newPlaylistUsername, setNewPlaylistUsername] = useState<string>("");
+  const [newPlaylistEmail, setNewPlaylistEmail] = useState<string>("");
 
   useEffect(() => {
-    getUsers();
-    getPlaylists();
+    const fetchPlaylists = async () => {
+      const response = await PlaylistService.getAllPlaylists();
+      const playlistData = await response.json();
+      setPlaylists(playlistData);
+      setFilteredPlaylists(playlistData);
+    };
+
+    fetchPlaylists();
   }, []);
 
-  useEffect(() => {
-    if (Array.isArray(playlists)) {
-      const filteredPlaylists = searchQuery
-        ? playlists.filter((playlist) =>
-            playlist.title.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : playlists;
-
-      const filteredUsers = users.filter((user) => {
-        const matchingPlaylists = user.playlists.filter((playlist) =>
-          filteredPlaylists.some((filteredPlaylist) => filteredPlaylist.id === playlist.id)
-        );
-        return matchingPlaylists.length > 0;
-      });
-
-      setFilteredUsers(filteredUsers);
-    }
-  }, [searchQuery, playlists, users]);
-
-  const handleSelectUser = (user: User) => {
-    setSelectedUser(user);
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    const filtered = playlists.filter((playlist) =>
+      playlist.title.toLowerCase().includes(event.target.value.toLowerCase())
+    );
+    setFilteredPlaylists(filtered);
   };
 
-  const handleAddPlaylist = (newPlaylist: Omit<Playlist, 'id'>) => {
-    const id = playlists.length ? playlists[playlists.length - 1].id + 1 : 1;
-    const playlistWithId: Playlist = { ...newPlaylist, id };
-    setPlaylists((prev) => [...prev, playlistWithId]);
+  const handleAddPlaylist = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!newPlaylistTitle || !newPlaylistDescription || !newPlaylistUsername || !newPlaylistEmail) {
+      alert("Please fill in all fields to create a playlist.");
+      return;
+    }
 
-    setUsers((prevUsers) =>
-      prevUsers.map((user) => {
-        if (user.id === newPlaylist.user.id) {
-          return { ...user, playlists: [...user.playlists, playlistWithId] };
-        }
-        return user;
-      })
-    );
+    const newPlaylist = {
+      title: newPlaylistTitle,
+      description: newPlaylistDescription,
+      user: {
+        username: newPlaylistUsername,
+        email: newPlaylistEmail,
+        password: "defaultPassword",
+      },
+    };
 
-    if (selectedUser && selectedUser.id === newPlaylist.user.id) {
-      setSelectedUser((prev) =>
-        prev
-          ? {
-              ...prev,
-              playlists: [...prev.playlists, playlistWithId],
-            }
-          : null
-      );
+    try {
+      const response = await PlaylistService.addPlaylist(newPlaylist);
+
+      if (!response.ok) {
+        throw new Error(`Failed to add playlist: ${response.statusText}`);
+      }
+
+      setNewPlaylistTitle("");
+      setNewPlaylistDescription("");
+      setNewPlaylistUsername("");
+      setNewPlaylistEmail("");
+
+      const updatedPlaylistsResponse = await PlaylistService.getAllPlaylists();
+      const updatedPlaylists = await updatedPlaylistsResponse.json();
+
+      setPlaylists(updatedPlaylists);
+      setFilteredPlaylists(updatedPlaylists);
+
+      alert("Playlist added successfully!");
+    } catch (error) {
+      console.error("Failed to add playlist", error);
+      if (error instanceof Error) {
+        alert(`Failed to add playlist. ${error.message}`);
+      } else {
+        alert("Failed to add playlist. An unknown error occurred.");
+      }
     }
   };
 
   return (
     <>
       <Header />
-      <div className="bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 min-h-screen">
-        <div className="max-w-screen-xl mx-auto p-6">
-          <h1 className="text-4xl font-bold text-blue-600 mb-4 text-center">Playlists</h1>
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 p-8">
+        <h1 className="text-4xl font-bold text-center text-blue-600 mb-8">
+          Add Playlist
+        </h1>
 
-          <div className="mb-6">
-            <input
-              type="text"
-              placeholder="Search Playlist by Title"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+        <div className="mb-6 max-w-lg mx-auto">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder="Search for a playlist by title"
+            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-          {filteredUsers.length > 0 ? (
-            <UserOverviewTable
-              users={filteredUsers}
-              selectUser={handleSelectUser}
-              playlists={playlists} // Display all playlists for each user
-            />
-          ) : (
-            <div className="text-center text-gray-500">
-              No playlists found.
+        <div className="overflow-x-auto mb-8">
+          <table className="min-w-full table-auto">
+            <thead>
+              <tr className="bg-blue-500 text-white">
+                <th className="px-4 py-2 text-left">Playlist Title</th>
+                <th className="px-4 py-2 text-left">User</th>
+                <th className="px-4 py-2 text-left">Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPlaylists.map((playlist) => (
+                <tr key={playlist.id} className="border-b hover:bg-blue-50">
+                  <td className="px-4 py-2">{playlist.title}</td>
+                  <td className="px-4 py-2">{playlist.user.username}</td>
+                  <td className="px-4 py-2">{playlist.user.email}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+          <h2 className="text-2xl font-bold text-blue-600 mb-6">
+            Create a New Playlist
+          </h2>
+          <form onSubmit={handleAddPlaylist}>
+            <div className="mb-4">
+              <label htmlFor="title" className="block text-gray-700 font-medium mb-2">
+                Playlist Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                value={newPlaylistTitle}
+                onChange={(e) => setNewPlaylistTitle(e.target.value)}
+                required
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
-          )}
-
-          {selectedUser && (
-            <AddPlaylist
-              selectedUser={selectedUser}
-              onAddPlaylist={handleAddPlaylist}
-              users={users}
-            />
-          )}
+            <div className="mb-4">
+              <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
+                Playlist Description
+              </label>
+              <textarea
+                id="description"
+                value={newPlaylistDescription}
+                onChange={(e) => setNewPlaylistDescription(e.target.value)}
+                required
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="username" className="block text-gray-700 font-medium mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={newPlaylistUsername}
+                onChange={(e) => setNewPlaylistUsername(e.target.value)}
+                required
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={newPlaylistEmail}
+                onChange={(e) => setNewPlaylistEmail(e.target.value)}
+                required
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition duration-300"
+            >
+              Add Playlist
+            </button>
+          </form>
         </div>
       </div>
     </>
   );
 };
 
-export const getServerSideProps = async (context: { locale: any }) => {
-  const { locale } = context;
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale ?? 'en', ['common'])),
+      ...(await serverSideTranslations(locale || "en", ["common"])),
     },
   };
 };
 
-export default Add;
+export default AddPlaylistPage;
