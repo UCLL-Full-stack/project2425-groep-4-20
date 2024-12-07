@@ -52,4 +52,23 @@ const createPlaylist = async (title: string, description: string, userId: number
     }
 };
 
-export default { getAllPlaylists, getPlaylistById, createPlaylist };
+const addSongToPlaylist = async (playlistId: number, songId: number) => {
+    try {
+        return await database.playlist.update({
+            where: { id: playlistId },
+            data: {
+                songs: {
+                    connect: { id: songId },
+                },
+            },
+            include: {
+                user: true,
+                songs: true,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while adding the song to the playlist');
+    }
+};
+export default { getAllPlaylists, getPlaylistById, createPlaylist, addSongToPlaylist };

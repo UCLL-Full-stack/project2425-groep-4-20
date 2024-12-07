@@ -29,5 +29,14 @@ const createPlaylist = async (title: string, description: string, userId: number
         throw new Error('An error occurred while creating the playlist');
     }
 };
+const addSongToPlaylist = async (playlistId: number, songId: number) => {
+    try {
+        const updatedPlaylist = await playlistRepository.addSongToPlaylist(playlistId, songId);
+        return updatedPlaylist;
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while adding the song to the playlist');
+    }
+};
 
-export default { getAllPlaylists, getPlaylistById, createPlaylist };
+export default { getAllPlaylists, getPlaylistById, createPlaylist, addSongToPlaylist };

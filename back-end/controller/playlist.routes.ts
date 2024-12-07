@@ -132,4 +132,52 @@ const createPlaylist = async (req: Request, res: Response) => {
 
 playlistRouter.post('/', createPlaylist);
 
+/**
+ * @swagger
+ * /playlists/{id}/songs:
+ *   post:
+ *     summary: Add a song to a playlist
+ *     description: Add a song to a specific playlist by providing the playlist ID and song ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the playlist
+ *         schema:
+ *           type: integer
+ *           format: int64
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               songId:
+ *                 type: integer
+ *                 description: ID of the song to add to the playlist
+ *     responses:
+ *       200:
+ *         description: Song added to the playlist successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Playlist'
+ *       404:
+ *         description: Playlist or Song not found
+ */
+const addSongToPlaylist = async (req: Request, res: Response) => {
+    const playlistId = Number(req.params.id);
+    const { songId } = req.body;
+
+    try {
+        const updatedPlaylist = await playlistService.addSongToPlaylist(playlistId, songId);
+        res.status(200).json(updatedPlaylist);
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while adding the song to the playlist', error });
+    }
+};
+
+playlistRouter.post('/:id/songs', addSongToPlaylist);
+
 export { playlistRouter };

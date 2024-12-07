@@ -28,13 +28,14 @@ app.use(expressjwt({
     algorithms: ['HS256']
 }).unless({
     path: [
-        /^\/api-docs(\/.*)?$/,  // Alle routes onder /api-docs
-        '/users/login',         // Exacte route /users/login
-        /^\/users(\/.*)?$/      // Alle routes onder /users, inclusief /users zelf
+        /^\/api-docs(\/.*)?$/,  
+        '/users/login',         
+        /^\/users(\/.*)?$/      
     ]
     
 }))
 
+// Swagger definitie
 // Swagger definitie
 const swaggerDefinition = {
     openapi: '3.0.0',
@@ -45,10 +46,25 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: `http://localhost:${port}`, // Zorg ervoor dat dit klopt met je serverconfiguratie
+            url: `http://localhost:${port}`,
+        },
+    ],
+    components: {
+        securitySchemes: {
+            bearerAuth: {
+                type: 'http',
+                scheme: 'bearer',
+                bearerFormat: 'JWT',
+            },
+        },
+    },
+    security: [
+        {
+            bearerAuth: [],
         },
     ],
 };
+
 
 // Swagger options
 const swaggerOptions = {
