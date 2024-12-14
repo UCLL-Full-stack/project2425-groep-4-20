@@ -4,6 +4,7 @@ import cors from 'cors';
 import * as bodyParser from 'body-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import helmet from 'helmet';
 import { userRouter } from './controller/user.routes';
 import { playlistRouter } from './controller/playlist.routes'; 
 import { albumRouter } from './controller/album.routes';
@@ -12,9 +13,10 @@ import { songRouter } from './controller/song.routes';
 import { expressjwt } from 'express-jwt';
 
 const app = express();
-require('dotenv').config();
 dotenv.config();
 const port = process.env.APP_PORT || 3000;
+
+app.use(helmet());
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -32,11 +34,8 @@ app.use(expressjwt({
         '/users/login',         
         /^\/users(\/.*)?$/      
     ]
-    
-}))
+}));
 
-// Swagger definitie
-// Swagger definitie
 const swaggerDefinition = {
     openapi: '3.0.0',
     info: {
@@ -65,41 +64,29 @@ const swaggerDefinition = {
     ],
 };
 
-
-// Swagger options
 const swaggerOptions = {
     swaggerDefinition,
-    apis: ['./controller/*.routes.ts'], // Dit is het pad naar je routebestanden
+    apis: ['./controller/*.routes.ts'],
 };
 
-// Swagger-spec genereren
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
-// Swagger UI instellen
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Gebruik routers voor gebruikers en afspeellijsten
 app.use('/users', userRouter);
 app.use('/playlists', playlistRouter);
 app.use('/albums', albumRouter);
 app.use('/artists', artistRouter);
 app.use('/songs', songRouter);
 
-
-app.use((err: any, req: Request, res: Response) => {
-    console.error(err.stack);
-    res.status(500).json({ message: 'Something went wrong!' });
-});
-
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error(err.stack);
-    res.status(400).json({
-        status: 'application error',
-        message: err.message 
+    res.status(err.status || 500).json({
+        status: 'error',
+        message: err.message || 'Something went wrong!',
     });
 });
 
 app.listen(port, () => {
     console.log(`Back-end is running on port ${port}.`);
 });
-

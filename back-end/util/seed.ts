@@ -14,6 +14,7 @@ const main = async () => {
 
     const hashedPassword1 = await bcrypt.hash('p1', 12);
     const hashedPassword2 = await bcrypt.hash('p2', 12);
+    const hashedPassword3 = await bcrypt.hash('p3', 12);
 
     const artist1 = await prisma.artist.create({
         data: {
@@ -112,6 +113,15 @@ const user2 = await prisma.user.create({
         email: 'beat@example.com',
         password: hashedPassword2,
         role: 'admin',
+    },
+});
+
+const user3 = await prisma.user.create({
+    data: {
+        username: 'klakke',
+        email: 'klakke@example.com',
+        password: hashedPassword3, 
+        role: 'artist',
     },
 });
 

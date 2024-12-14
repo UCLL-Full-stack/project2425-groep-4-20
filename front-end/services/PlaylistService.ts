@@ -12,6 +12,22 @@ const getAllPlaylists = async () => {
   });
 };
 
+const getPlaylistsByUserId = async (userId: number) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}/playlists`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch playlists by user ID');
+  }
+
+  return response.json();
+};
+
 const addPlaylist = async (playlist: Omit<Playlist, 'id'>) => {
   return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists`, {
     method: 'POST',
@@ -75,6 +91,7 @@ const removeSongFromPlaylist = async (playlistId: number, songId: number) => {
 
 const PlaylistService = {
   getAllPlaylists,
+  getPlaylistsByUserId,
   addPlaylist,
   addSongToPlaylist,
   updatePlaylistTitle,

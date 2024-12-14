@@ -2,6 +2,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React from 'react';
 import Header from '@components/Header';
 import { useTranslation } from 'next-i18next';
+import UserOverview from "@components/homepage/userOverview";
 
 const HomePage: React.FC = () => {
     const {t} = useTranslation('');
@@ -17,6 +18,7 @@ const HomePage: React.FC = () => {
                     <p className="text-lg text-gray-700 mb-6">
                         {t("app.description")}
                     </p>
+                    <UserOverview />
                 </div>
             </div>
         </>

@@ -39,9 +39,9 @@ const IndexPage = () => {
       const updatedPlaylists = await updatedPlaylistsResponse.json();
       setPlaylists(updatedPlaylists);
 
-      alert('Song successfully added to playlist!');
+      alert(t('catalog.success'));
     } else {
-      alert('Please select both a playlist and a song');
+      alert(t('catalog.error'));
     }
   };
 
@@ -59,25 +59,19 @@ const IndexPage = () => {
 
   const handleRemoveSong = async (songId: number, playlistId: number) => {
     try {
-      // Call the API to remove the song from the playlist
       await PlaylistService.removeSongFromPlaylist(playlistId, songId);
 
-      // Find the playlist and remove the song from the list
       const updatedPlaylists = playlists.map((playlist) => {
         if (playlist.id === playlistId) {
-          // Filter out the song from the playlist
           playlist.songs = playlist.songs.filter((song) => song.id !== songId);
         }
         return playlist;
       });
-
-      // Update the state without fetching the entire playlist list again
       setPlaylists(updatedPlaylists);
 
-      alert('Song successfully removed from playlist!');
+      alert(t('catalog.removesuccess'));
     } catch (error) {
-      alert('Failed to remove song from playlist');
-      console.error(error);
+      alert(t('catalog.removeerror'));
     }
   };
 
@@ -85,17 +79,17 @@ const IndexPage = () => {
     <>
       <Header />
       <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 p-8">
-        <h1 className="text-4xl font-bold text-center text-blue-600 mb-8">Playlist Catalog</h1>
+        <h1 className="text-4xl font-bold text-center text-blue-600 mb-8">{t('catalog.title')}</h1>
 
         <div className="bg-white p-6 rounded-lg shadow-lg max-w-6xl mx-auto">
           <div className="overflow-x-auto">
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="bg-blue-500 text-white">
-                  <th className="px-4 py-2 text-left">Playlist</th>
-                  <th className="px-4 py-2 text-left">User</th>
-                  <th className="px-4 py-2 text-left">Songs</th>
-                  <th className="px-4 py-2 text-left">Actions</th>
+                  <th className="px-4 py-2 text-left">{t('catalog.tablePlaylist')}</th>
+                  <th className="px-4 py-2 text-left">{t('catalog.tableUser')}</th>
+                  <th className="px-4 py-2 text-left">{t('catalog.tableSongs')}</th>
+                  <th className="px-4 py-2 text-left">{t('catalog.tableActions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -113,13 +107,13 @@ const IndexPage = () => {
                                 onClick={() => handleRemoveSong(song.id, playlist.id)}
                                 className="ml-2 text-red-500 hover:text-red-700"
                               >
-                                Remove
+                                {t('catalog.removeSong')}
                               </button>
                             </li>
                           ))}
                         </ul>
                       ) : (
-                        <span className="text-gray-500">No songs in this playlist.</span>
+                        <span className="text-gray-500">{t('catalog.noSongs')}</span>
                       )}
                     </td>
                     <td className="px-4 py-2">
@@ -127,7 +121,7 @@ const IndexPage = () => {
                         onClick={() => { setIsEditing(true); setNewTitle(playlist.title); setSelectedPlaylist(playlist.id); }}
                         className="mr-2 px-4 py-2 bg-blue-600 text-white rounded"
                       >
-                        Edit Title
+                        {t('catalog.editTitle')}
                       </button>
                     </td>
                   </tr>
@@ -140,6 +134,7 @@ const IndexPage = () => {
             <div className="mt-4">
               <input
                 type="text"
+                placeholder={t('catalog.editPlaceholder')}
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded"
@@ -148,7 +143,7 @@ const IndexPage = () => {
                 onClick={handleUpdateTitle}
                 className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
               >
-                Save
+                {t('catalog.save')}
               </button>
             </div>
           )}
@@ -160,7 +155,7 @@ const IndexPage = () => {
               onClick={handleAddSong}
               className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-600 transition duration-300"
             >
-              Add Song to Playlist
+              {t('catalog.addSong')}
             </button>
           </div>
         </div>

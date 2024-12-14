@@ -180,4 +180,103 @@ const addSongToPlaylist = async (req: Request, res: Response) => {
 
 playlistRouter.post('/:id/songs', addSongToPlaylist);
 
+/**
+ * @swagger
+ * /playlists/{id}/songs:
+ *   delete:
+ *     summary: Remove a song from a playlist
+ *     description: Remove a song from a specific playlist using the playlist ID and song ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the playlist
+ *         schema:
+ *           type: integer
+ *           format: int64
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               songId:
+ *                 type: integer
+ *                 description: ID of the song to remove from the playlist
+ *     responses:
+ *       200:
+ *         description: Song removed from the playlist successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Playlist'
+ *       404:
+ *         description: Playlist or Song not found
+ */
+const removeSongFromPlaylist = async (req: Request, res: Response) => {
+    const playlistId = Number(req.params.id);
+    const { songId } = req.body;
+
+    try {
+        const updatedPlaylist = await playlistService.removeSongFromPlaylist(playlistId, songId);
+        res.status(200).json(updatedPlaylist);
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while removing the song from the playlist', error });
+    }
+};
+playlistRouter.delete('/:id/songs', removeSongFromPlaylist);
+
+/**
+ * @swagger
+ * /playlists/{id}:
+ *   put:
+ *     summary: Update the title of a playlist
+ *     description: Update the title of a specific playlist using its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the playlist to update
+ *         schema:
+ *           type: integer
+ *           format: int64
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: New title for the playlist
+ *     responses:
+ *       200:
+ *         description: Playlist title updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Playlist'
+ *       404:
+ *         description: Playlist not found
+ */
+
+const updatePlaylistTitle = async (req: Request, res: Response) => {
+    const playlistId = Number(req.params.id);
+    const { title } = req.body;
+
+    try {
+        const updatedPlaylist = await playlistService.updatePlaylistTitle(playlistId, title);
+        res.status(200).json(updatedPlaylist);
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while updating the playlist title', error });
+    }
+};
+
+
+
+playlistRouter.put('/:id', updatePlaylistTitle);
+
+
 export { playlistRouter };

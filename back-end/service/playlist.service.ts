@@ -29,6 +29,7 @@ const createPlaylist = async (title: string, description: string, userId: number
         throw new Error('An error occurred while creating the playlist');
     }
 };
+
 const addSongToPlaylist = async (playlistId: number, songId: number) => {
     try {
         const updatedPlaylist = await playlistRepository.addSongToPlaylist(playlistId, songId);
@@ -39,4 +40,31 @@ const addSongToPlaylist = async (playlistId: number, songId: number) => {
     }
 };
 
-export default { getAllPlaylists, getPlaylistById, createPlaylist, addSongToPlaylist };
+const removeSongFromPlaylist = async (playlistId: number, songId: number) => {
+    try {
+        const updatedPlaylist = await playlistRepository.removeSongFromPlaylist(playlistId, songId);
+        return updatedPlaylist;
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while removing the song from the playlist');
+    }
+};
+
+const updatePlaylistTitle = async (playlistId: number, newTitle: string) => {
+    try {
+        const updatedPlaylist = await playlistRepository.updatePlaylistTitle(playlistId, newTitle);
+        return updatedPlaylist;
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while updating the playlist title');
+    }
+};
+
+export default {
+    getAllPlaylists,
+    getPlaylistById,
+    createPlaylist,
+    addSongToPlaylist,
+    removeSongFromPlaylist,
+    updatePlaylistTitle,
+};

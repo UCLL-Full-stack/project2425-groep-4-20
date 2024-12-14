@@ -4,7 +4,7 @@ import { Playlist } from "@types";
 import Header from "@components/Header";
 import { GetServerSideProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 const AddPlaylistPage = () => {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ const AddPlaylistPage = () => {
   const handleAddPlaylist = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!newPlaylistTitle || !newPlaylistDescription || !newPlaylistUsername || !newPlaylistEmail) {
-      alert("Please fill in all fields to create a playlist.");
+      alert(t("addplaylist.errorFillFields"));
       return;
     }
 
@@ -71,14 +71,10 @@ const AddPlaylistPage = () => {
       setPlaylists(updatedPlaylists);
       setFilteredPlaylists(updatedPlaylists);
 
-      alert("Playlist added successfully!");
+      alert(t("addplaylist.success"));
     } catch (error) {
       console.error("Failed to add playlist", error);
-      if (error instanceof Error) {
-        alert(`Failed to add playlist. ${error.message}`);
-      } else {
-        alert("Failed to add playlist. An unknown error occurred.");
-      }
+      alert(t("addplaylist.error"));
     }
   };
 
@@ -87,7 +83,7 @@ const AddPlaylistPage = () => {
       <Header />
       <div className="min-h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 p-8">
         <h1 className="text-4xl font-bold text-center text-blue-600 mb-8">
-          Add Playlist
+          {t("addplaylist.title")}
         </h1>
 
         <div className="mb-6 max-w-lg mx-auto">
@@ -95,7 +91,7 @@ const AddPlaylistPage = () => {
             type="text"
             value={searchQuery}
             onChange={handleSearch}
-            placeholder="Search for a playlist by title"
+            placeholder={t("addplaylist.search_placeholder")}
             className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -104,9 +100,9 @@ const AddPlaylistPage = () => {
           <table className="min-w-full table-auto">
             <thead>
               <tr className="bg-blue-500 text-white">
-                <th className="px-4 py-2 text-left">Playlist Title</th>
-                <th className="px-4 py-2 text-left">User</th>
-                <th className="px-4 py-2 text-left">Email</th>
+                <th className="px-4 py-2 text-left">{t("addplaylist.tableTitle")}</th>
+                <th className="px-4 py-2 text-left">{t("addplaylist.tableUser")}</th>
+                <th className="px-4 py-2 text-left">{t("addplaylist.tableEmail")}</th>
               </tr>
             </thead>
             <tbody>
@@ -123,12 +119,12 @@ const AddPlaylistPage = () => {
 
         <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
           <h2 className="text-2xl font-bold text-blue-600 mb-6">
-            Create a New Playlist
+            {t("addplaylist.createTitle")}
           </h2>
           <form onSubmit={handleAddPlaylist}>
             <div className="mb-4">
               <label htmlFor="title" className="block text-gray-700 font-medium mb-2">
-                Playlist Title
+                {t("addplaylist.playlistTitle")}
               </label>
               <input
                 type="text"
@@ -141,7 +137,7 @@ const AddPlaylistPage = () => {
             </div>
             <div className="mb-4">
               <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
-                Playlist Description
+                {t("addplaylist.playlistDescription")}
               </label>
               <textarea
                 id="description"
@@ -153,7 +149,7 @@ const AddPlaylistPage = () => {
             </div>
             <div className="mb-4">
               <label htmlFor="username" className="block text-gray-700 font-medium mb-2">
-                Username
+                {t("addplaylist.username")}
               </label>
               <input
                 type="text"
@@ -166,7 +162,7 @@ const AddPlaylistPage = () => {
             </div>
             <div className="mb-4">
               <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-                Email
+                {t("addplaylist.email")}
               </label>
               <input
                 type="email"
@@ -181,7 +177,7 @@ const AddPlaylistPage = () => {
               type="submit"
               className="w-full py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition duration-300"
             >
-              Add Playlist
+              {t("addplaylist.addButton")}
             </button>
           </form>
         </div>
@@ -193,7 +189,7 @@ const AddPlaylistPage = () => {
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale || "en", ["common"])),
+      ...(await serverSideTranslations(locale || "en", ["common", "addplaylist"])),
     },
   };
 };

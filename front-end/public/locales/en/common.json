@@ -5,27 +5,67 @@
     "getStarted": "Login"
   },
   "header": {
-  "home": "Home",
-  "login": "Login",
-  "catalog": "Catalog",
-  "addPlaylist": "Add Playlist",
-  "logout": "logout",
-  "song": "Songs"
-},
-"addplaylist": {
-"subtitle": "Press on a user to add a Playlist",
-  "search_placeholder": "Search Playlist by Title"
-},
-
-"login": {
-    "title": "Login",
+    "home": "Home",
+    "login": "Login",
+    "catalog": "Catalog",
+    "addPlaylist": "Add Playlist",
+    "logout": "Logout",
+    "song": "Songs"
+  },
+  "addplaylist": {
+    "title": "Add Playlist",
+    "subtitle": "Press on a user to add a Playlist",
+    "search_placeholder": "Search Playlist by Title",
+    "tableTitle": "Playlist Title",
+    "tableUser": "User",
+    "tableEmail": "Email",
+    "createTitle": "Create a New Playlist",
+    "playlistTitle": "Playlist Title",
+    "playlistDescription": "Playlist Description",
     "username": "Username",
-    "password": "Password",
-    "loginButton": "Login",
-    "noAccount": "Don't have an account?",
-    "signupLink": "Sign up",
-    "errors": {
-      "usernameRequired": "Username is required",
-      "passwordRequired": "Password is required"
-    }
-  }}
+    "email": "Email",
+    "addButton": "Add Playlist",
+    "errorFillFields": "Please fill in all fields to create a playlist.",
+    "success": "Playlist added successfully!",
+    "error": "Failed to add playlist. An error occurred."
+  },
+  "catalog": {
+    "title": "Playlist Catalog",
+    "tablePlaylist": "Playlist",
+    "tableUser": "User",
+    "tableSongs": "Songs",
+    "tableActions": "Actions",
+    "removeSong": "Remove",
+    "noSongs": "No songs in this playlist.",
+    "editTitle": "Edit Title",
+    "editPlaceholder": "Enter new playlist title",
+    "save": "Save",
+    "addSong": "Add Song to Playlist",
+    "chooseSong": "Choose a song",
+    "choosePlaylist": "Choose a playlist",
+    "success": "Song added successfully!",
+    "error": "Failed to add song. An error occurred.",
+    "removesuccess": "Song removed successfully!",
+    "removeerror": "Failed to remove song. An error occurred."
+  },
+  "songs": {
+    "title": "Songs",
+    "searchPlaceholder": "Search songs...",
+    "table": {
+      "title": "Title",
+      "genre": "Genre",
+      "releaseDate": "Release Date",
+      "length": "Length"
+  }
+},
+  "addSong": {
+    "title": "Add New Song",
+    "songTitle": "Title",
+    "songGenre": "Genre",
+    "songLength": "Length (min)",
+    "addButton": "Add Song",
+    "errorFillFields": "All fields are required",
+    "success": "Song added successfully",
+    "error": "Failed to add song"
+  }
+}

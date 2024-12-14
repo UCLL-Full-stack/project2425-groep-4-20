@@ -71,4 +71,48 @@ const addSongToPlaylist = async (playlistId: number, songId: number) => {
         throw new Error('An error occurred while adding the song to the playlist');
     }
 };
-export default { getAllPlaylists, getPlaylistById, createPlaylist, addSongToPlaylist };
+
+const removeSongFromPlaylist = async (playlistId: number, songId: number) => {
+    try {
+        return await database.playlist.update({
+            where: { id: playlistId },
+            data: {
+                songs: {
+                    disconnect: { id: songId },
+                },
+            },
+            include: {
+                user: true,
+                songs: true,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while removing the song from the playlist');
+    }
+};
+
+const updatePlaylistTitle = async (playlistId: number, newTitle: string) => {
+    try {
+        return await database.playlist.update({
+            where: { id: playlistId },
+            data: { title: newTitle },
+            include: {
+                user: true,
+                songs: true,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while updating the playlist title');
+    }
+};
+
+export default {
+    getAllPlaylists,
+    getPlaylistById,
+    createPlaylist,
+    addSongToPlaylist,
+    removeSongFromPlaylist,
+    updatePlaylistTitle,
+};
