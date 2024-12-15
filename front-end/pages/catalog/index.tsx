@@ -4,7 +4,7 @@ import SongService from '@services/SongService';
 import AddSongToPlaylist from '@components/catalog/AddSongToPlaylist';
 import PlaylistCatalog from '@components/catalog/PlaylistCatalog';
 import Header from '@components/Header';
-import { SongWithRelations } from '@types';
+import { SongWithRelations, User } from '@types';
 import { GetServerSideProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -17,6 +17,7 @@ const IndexPage = () => {
   const [selectedSong, setSelectedSong] = useState<number | null>(null);
   const [newTitle, setNewTitle] = useState<string>('');
   const [isEditing, setIsEditing] = useState(false);
+  const [loggedInUser, setLoggedUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchPlaylistsAndSongs = async () => {
@@ -29,6 +30,10 @@ const IndexPage = () => {
     };
 
     fetchPlaylistsAndSongs();
+    const user = localStorage.getItem("loggedInUser");
+    if (user) {
+        setLoggedUser(JSON.parse(user));
+    }
   }, []);
 
   const handleAddSong = async () => {
@@ -147,8 +152,8 @@ const IndexPage = () => {
               </button>
             </div>
           )}
-
-          <div className="mt-8">
+            {loggedInUser?.role !== "artist" && (
+            <div className="mt-8">
             <PlaylistCatalog playlists={playlists} setSelectedPlaylist={setSelectedPlaylist} />
             <AddSongToPlaylist songs={songs} setSelectedSong={setSelectedSong} />
             <button
@@ -157,7 +162,7 @@ const IndexPage = () => {
             >
               {t('catalog.addSong')}
             </button>
-          </div>
+            </div>)}
         </div>
       </div>
     </>

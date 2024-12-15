@@ -3,15 +3,19 @@ import Language from './language/Language';
 import { use, useEffect, useState } from 'react';
 import router from 'next/router';
 import { useTranslation } from 'next-i18next';
+import { User } from '@types';
 
 const Header: React.FC = () => {
   const { t } = useTranslation();
-
-  const [loggedInUser, setLoggedUser] = useState<string | null>(null);
-  useEffect(() => {setLoggedUser(sessionStorage.getItem("loggedInUser"));} , []);
-
+  const [loggedInUser, setLoggedUser] = useState<User | null>(null);
+  useEffect(() => {
+    const user = localStorage.getItem("loggedInUser");
+    if (user) {
+        setLoggedUser(JSON.parse(user));
+    }
+  }, [])
   const handleLogout = () => {
-    sessionStorage.removeItem('loggedInUser');
+    localStorage.removeItem('loggedInUser');
     router.push('/login');
   }
   return (
@@ -32,7 +36,7 @@ const Header: React.FC = () => {
           <Link href="/addPlaylistt" className="text-white text-lg hover:underline">
            {t('header.addPlaylist')}
           </Link>}
-          {loggedInUser && 
+          {loggedInUser &&
           <Link href="/song" className="text-white text-lg hover:underline">
           {t('header.song', { defaultValue: 'Songs' })}
         </Link>}

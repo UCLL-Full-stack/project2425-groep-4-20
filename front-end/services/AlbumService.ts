@@ -1,5 +1,5 @@
 import { Album } from "@types";
-const token = typeof window !== "undefined" ? JSON.parse(sessionStorage.getItem("loggedInUser") || "{}")?.token : null;
+const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("loggedInUser") || "{}")?.token : null;
 
 const getAllAlbums = async () => {
     return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/albums`, {

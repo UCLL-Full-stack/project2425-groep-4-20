@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { SongWithRelations } from '@types';
+import { SongWithRelations, User } from '@types';
 import Header from '@components/Header';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
@@ -12,6 +12,7 @@ const SongsPage = () => {
   const { t } = useTranslation();
   const [songs, setSongs] = useState<SongWithRelations[]>([]);
   const [filteredSongs, setFilteredSongs] = useState<SongWithRelations[]>([]);
+   const [loggedInUser, setLoggedUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -20,6 +21,10 @@ const SongsPage = () => {
       setFilteredSongs(response);
     };
     fetchSongs();
+    const user = localStorage.getItem("loggedInUser");
+    if (user) {
+        setLoggedUser(JSON.parse(user));
+    }
   }, []);
 
   return (
@@ -37,6 +42,7 @@ const SongsPage = () => {
             originalSongs={songs}
           />
         </section>
+        {loggedInUser?.role === "artist" && (
         <section className="mt-8 w-full max-w-6xl bg-white p-6 rounded-lg shadow-lg">
           <AddSong
             onSongAdded={() =>
@@ -46,7 +52,7 @@ const SongsPage = () => {
               })
             }
           />
-        </section>
+        </section>)}
       </main>
     </>
   );
