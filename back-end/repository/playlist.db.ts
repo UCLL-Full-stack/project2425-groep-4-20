@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { PlaylistInput } from '../types';
 
 const database = new PrismaClient();
 
@@ -31,26 +32,6 @@ const getPlaylistById = async (id: number) => {
     }
 };
 
-const createPlaylist = async (title: string, description: string, userId: number) => {
-    try {
-        return await database.playlist.create({
-            data: {
-                title,
-                description,
-                user: {
-                    connect: { id: userId },
-                },
-            },
-            include: {
-                user: true,
-                songs: true,
-            },
-        });
-    } catch (error) {
-        console.error(error);
-        throw new Error('An error occurred while creating the playlist');
-    }
-};
 
 const addSongToPlaylist = async (playlistId: number, songId: number) => {
     try {
@@ -71,6 +52,39 @@ const addSongToPlaylist = async (playlistId: number, songId: number) => {
         throw new Error('An error occurred while adding the song to the playlist');
     }
 };
+
+const addPlaylist = async (playlistInput: PlaylistInput) => {
+    try {
+      if (!playlistInput.userId) {
+        throw new Error("User ID is required to create a playlist");
+      }
+  
+      const newPlaylist = await database.playlist.create({
+        data: {
+          title: playlistInput.title,
+          description: playlistInput.description,
+          user: {
+            connect: {
+              id: playlistInput.userId, // Zorg dat deze waarde correct is
+            },
+          },
+          songs: playlistInput.songId?.map((songId: any) => ({
+            connect: { id: songId },
+          })),
+        },
+        include: {
+          user: true,
+          songs: true,
+        },
+      });
+  
+      return newPlaylist;
+    } catch (error) {
+      console.error("Error creating playlist:", error);
+      throw error;
+    }
+  };
+  
 
 const removeSongFromPlaylist = async (playlistId: number, songId: number) => {
     try {
@@ -111,7 +125,7 @@ const updatePlaylistTitle = async (playlistId: number, newTitle: string) => {
 export default {
     getAllPlaylists,
     getPlaylistById,
-    createPlaylist,
+    addPlaylist,
     addSongToPlaylist,
     removeSongFromPlaylist,
     updatePlaylistTitle,

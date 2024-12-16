@@ -1,6 +1,7 @@
-import React from 'react';
-import { SongWithRelations } from '@types';
+import React, { useEffect, useState } from 'react';
+import { Album, SongWithRelations } from '@types';
 import { useTranslation } from 'next-i18next';
+import AlbumService from '@services/AlbumService';
 
 type Props = {
     songs: SongWithRelations[];
@@ -10,6 +11,22 @@ type Props = {
 
 const SongOverviewTable: React.FC<Props> = ({ songs, setFilteredSongs, originalSongs }: Props) => {
     const { t } = useTranslation();
+    const [albums, setAlbums] = useState<Record<number, string>>({});
+
+    useEffect(() => {
+        const loadAlbums = async () => {
+            const albumResponse = await AlbumService.getAllAlbums();
+            if (albumResponse.ok) {
+                const albumsData = await albumResponse.json();
+                const albumMap: Record<number, string> = albumsData.reduce((acc: Record<number, string>, album: Album) => {
+                    acc[album.id] = album.title;
+                    return acc;
+                }, {});
+                setAlbums(albumMap);
+            }
+        };
+        loadAlbums();
+    }, []);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.toLowerCase();
@@ -34,6 +51,7 @@ const SongOverviewTable: React.FC<Props> = ({ songs, setFilteredSongs, originalS
                             <th className="px-4 py-2 text-left">{t('songs.table.genre')}</th>
                             <th className="px-4 py-2 text-left">{t('songs.table.releaseDate')}</th>
                             <th className="px-4 py-2 text-left">{t('songs.table.length')}</th>
+                            <th className="px-4 py-2 text-left">{t('songs.table.album')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,6 +61,8 @@ const SongOverviewTable: React.FC<Props> = ({ songs, setFilteredSongs, originalS
                                 <td className="px-4 py-2">{song.genre}</td>
                                 <td className="px-4 py-2">{new Date(song.releaseDate).toLocaleDateString()}</td>
                                 <td className="px-4 py-2">{song.length} min</td>
+                                <td className="px-4 py-2">{albums[song.album.id]}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

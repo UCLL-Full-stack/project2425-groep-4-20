@@ -20,10 +20,21 @@ const getAlbumById = async (id: number) => {
         },
     });
 };
+const addAlbum = async (album: { title: string; artist: string; releaseDate: string }) => {
+    return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/albums`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(album),
+    });
+};
 
 const AlbumService = {
     getAllAlbums,
     getAlbumById,
+    addAlbum,
 };
 
 export default AlbumService;

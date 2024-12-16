@@ -10,7 +10,8 @@
     "catalog": "Catalog",
     "addPlaylist": "Add Playlist",
     "logout": "Logout",
-    "song": "Songs"
+    "song": "Songs",
+    "album": "Albums"
   },
   "addplaylist": {
     "title": "Add Playlist",
@@ -27,7 +28,8 @@
     "addButton": "Add Playlist",
     "errorFillFields": "Please fill in all fields to create a playlist.",
     "success": "Playlist added successfully!",
-    "error": "Failed to add playlist. An error occurred."
+    "error": "Failed to add playlist. An error occurred.",
+    "errorUser": "Please select a user to add a playlist."
   },
   "catalog": {
     "title": "Playlist Catalog",
@@ -55,7 +57,8 @@
       "title": "Title",
       "genre": "Genre",
       "releaseDate": "Release Date",
-      "length": "Length"
+      "length": "Length",
+      "album": "Album"
   }
 },
   "addSong": {
@@ -67,5 +70,21 @@
     "errorFillFields": "All fields are required",
     "success": "Song added successfully",
     "error": "Failed to add song"
-  }
+  },
+  "albumcatalog": {
+        "albumCatalogTitle": "Album Catalog",
+        "tableAlbumTitle": "Album Title",
+        "tableSongsCount": "Number of Songs",
+        "albumSongs": "Songs in the Album",
+        "songs": "Songs",
+        "addAlbumTitle": "Add New Album",
+        "albumTitlePlaceholder": "Albumtitle",
+        "artistPlaceholder": "Artist",
+        "releaseDatePlaceholder": "Release date",
+        "addButton": "Add Album",
+        "fillFields": "Fill in all fields to add the album.",
+        "albumAdded": "Album added successfully!",
+        "errorAddingAlbum": "Failed to add the album. An error occurred."
+
+    }
 }

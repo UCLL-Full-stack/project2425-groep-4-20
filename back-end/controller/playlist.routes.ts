@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import playlistService from '../service/playlist.service';
+import { PlaylistInput } from '../types';
 
 const playlistRouter = express.Router();
 
@@ -94,24 +95,14 @@ playlistRouter.get('/:id', getPlaylistById);
  * @swagger
  * /playlists:
  *   post:
- *     summary: Create a new playlist
- *     description: Create a new playlist with the provided title and description.
+ *     summary: Add a new playlist
+ *     description: Add a new playlist by providing title, description, and user information.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *                 description: Playlist title.
- *               description:
- *                 type: string
- *                 description: Playlist description.
- *               userId:
- *                 type: integer
- *                 description: ID of the user who is creating the playlist.
+ *             $ref: '#/components/schemas/Playlist'
  *     responses:
  *       201:
  *         description: Playlist created successfully
@@ -120,17 +111,20 @@ playlistRouter.get('/:id', getPlaylistById);
  *             schema:
  *               $ref: '#/components/schemas/Playlist'
  */
-const createPlaylist = async (req: Request, res: Response) => {
-    const { title, description, userId } = req.body; // Ensure the userId is passed in the request body
+const addPlaylist = async (req: Request, res: Response) => {
+    const playlistInput: PlaylistInput = req.body;
+
     try {
-        const newPlaylist = await playlistService.createPlaylist(title, description, userId);
+        const newPlaylist = await playlistService.addPlaylist(playlistInput);
         res.status(201).json(newPlaylist);
     } catch (error) {
-        res.status(500).json({ message: 'An error occurred while creating the playlist', error });
+        res.status(500).json({ message: 'An error occurred while adding the playlist', error });
     }
 };
 
-playlistRouter.post('/', createPlaylist);
+playlistRouter.post('/', addPlaylist);
+  
+
 
 /**
  * @swagger
@@ -216,7 +210,7 @@ playlistRouter.post('/:id/songs', addSongToPlaylist);
  */
 const removeSongFromPlaylist = async (req: Request, res: Response) => {
     const playlistId = Number(req.params.id);
-    const { songId } = req.body;
+    const songId = Number(req.params.songId);
 
     try {
         const updatedPlaylist = await playlistService.removeSongFromPlaylist(playlistId, songId);
@@ -225,7 +219,9 @@ const removeSongFromPlaylist = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'An error occurred while removing the song from the playlist', error });
     }
 };
-playlistRouter.delete('/:id/songs', removeSongFromPlaylist);
+
+playlistRouter.delete('/:id/songs/:songId', removeSongFromPlaylist);
+
 
 /**
  * @swagger

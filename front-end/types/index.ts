@@ -2,7 +2,7 @@ export type Playlist = {
     id: number;
     title: string;
     description: string;
-    user: User;
+    user: Omit<User, 'password'>;
 };
 
 
@@ -31,6 +31,7 @@ export type Artist = {
 };
 
 export type Album = {
+    artist: Artist;
     id: number;
     title: string;
     releaseDate: Date;

@@ -32,13 +32,17 @@ const Header: React.FC = () => {
           <Link href="/catalog" className="text-white text-lg hover:underline">
            {t('header.catalog')}
           </Link>}
-          {loggedInUser && 
+          {loggedInUser && loggedInUser?.role !== "artist" && (
           <Link href="/addPlaylistt" className="text-white text-lg hover:underline">
            {t('header.addPlaylist')}
-          </Link>}
+          </Link>)}
           {loggedInUser &&
           <Link href="/song" className="text-white text-lg hover:underline">
-          {t('header.song', { defaultValue: 'Songs' })}
+          {t('header.song',)}
+        </Link>}
+        {loggedInUser &&
+          <Link href="/albumCatalog" className="text-white text-lg hover:underline">
+          {t('header.album',)}
         </Link>}
           {loggedInUser && 
           <li>

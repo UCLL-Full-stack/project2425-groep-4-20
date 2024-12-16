@@ -1,4 +1,6 @@
 import songRepository from '../repository/song.db';
+import { SongInput } from '../types';
+import albumService from './album.service';
 
 const getAllSongs = async () => {
     try {
@@ -20,4 +22,4 @@ const getSongById = async (id: number) => {
     }
 };
 
-export default { getAllSongs, getSongById, };
+export default { getAllSongs, getSongById,};

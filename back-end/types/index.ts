@@ -15,6 +15,8 @@ type UserLogin = {
 }
 
 type PlaylistInput = {
+    userId: any;
+    songId: any;
     id?: number;
     title: string;
     description: string;

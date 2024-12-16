@@ -1,4 +1,5 @@
 import playlistRepository from '../repository/playlist.db';
+import { PlaylistInput } from '../types';
 
 const getAllPlaylists = async () => {
     try {
@@ -20,15 +21,17 @@ const getPlaylistById = async (id: number) => {
     }
 };
 
-const createPlaylist = async (title: string, description: string, userId: number) => {
+const addPlaylist = async (playlistInput: PlaylistInput) => {
     try {
-        const playlist = await playlistRepository.createPlaylist(title, description, userId);
-        return playlist;
+        const newPlaylist = await playlistRepository.addPlaylist(playlistInput);
+        return newPlaylist;
     } catch (error) {
         console.error(error);
-        throw new Error('An error occurred while creating the playlist');
+        throw new Error('An error occurred while adding the playlist');
     }
 };
+
+
 
 const addSongToPlaylist = async (playlistId: number, songId: number) => {
     try {
@@ -63,7 +66,7 @@ const updatePlaylistTitle = async (playlistId: number, newTitle: string) => {
 export default {
     getAllPlaylists,
     getPlaylistById,
-    createPlaylist,
+    addPlaylist,
     addSongToPlaylist,
     removeSongFromPlaylist,
     updatePlaylistTitle,

@@ -32,7 +32,7 @@ const IndexPage = () => {
     fetchPlaylistsAndSongs();
     const user = localStorage.getItem("loggedInUser");
     if (user) {
-        setLoggedUser(JSON.parse(user));
+      setLoggedUser(JSON.parse(user));
     }
   }, []);
 
@@ -65,7 +65,7 @@ const IndexPage = () => {
   const handleRemoveSong = async (songId: number, playlistId: number) => {
     try {
       await PlaylistService.removeSongFromPlaylist(playlistId, songId);
-
+  
       const updatedPlaylists = playlists.map((playlist) => {
         if (playlist.id === playlistId) {
           playlist.songs = playlist.songs.filter((song) => song.id !== songId);
@@ -73,12 +73,13 @@ const IndexPage = () => {
         return playlist;
       });
       setPlaylists(updatedPlaylists);
-
       alert(t('catalog.removesuccess'));
     } catch (error) {
+      console.error('Error removing song:', error);
       alert(t('catalog.removeerror'));
     }
   };
+  
 
   return (
     <>
@@ -94,7 +95,8 @@ const IndexPage = () => {
                   <th className="px-4 py-2 text-left">{t('catalog.tablePlaylist')}</th>
                   <th className="px-4 py-2 text-left">{t('catalog.tableUser')}</th>
                   <th className="px-4 py-2 text-left">{t('catalog.tableSongs')}</th>
-                  <th className="px-4 py-2 text-left">{t('catalog.tableActions')}</th>
+                  {loggedInUser?.role !== "artist" && (
+                  <th className="px-4 py-2 text-left">{t('catalog.tableActions')}</th>)}
                 </tr>
               </thead>
               <tbody>
@@ -108,19 +110,20 @@ const IndexPage = () => {
                           {playlist.songs.map((song) => (
                             <li key={song.id} className="text-gray-700">
                               {song.title}
+                              {loggedInUser?.role !== "artist" && (
                               <button
                                 onClick={() => handleRemoveSong(song.id, playlist.id)}
                                 className="ml-2 text-red-500 hover:text-red-700"
                               >
                                 {t('catalog.removeSong')}
-                              </button>
+                              </button>)}
                             </li>
                           ))}
                         </ul>
                       ) : (
                         <span className="text-gray-500">{t('catalog.noSongs')}</span>
                       )}
-                    </td>
+                    </td> {loggedInUser?.role !== "artist" && (
                     <td className="px-4 py-2">
                       <button
                         onClick={() => { setIsEditing(true); setNewTitle(playlist.title); setSelectedPlaylist(playlist.id); }}
@@ -128,7 +131,7 @@ const IndexPage = () => {
                       >
                         {t('catalog.editTitle')}
                       </button>
-                    </td>
+                    </td>)}
                   </tr>
                 ))}
               </tbody>
@@ -152,17 +155,19 @@ const IndexPage = () => {
               </button>
             </div>
           )}
-            {loggedInUser?.role !== "artist" && (
+
+          {loggedInUser?.role !== "artist" && (
             <div className="mt-8">
-            <PlaylistCatalog playlists={playlists} setSelectedPlaylist={setSelectedPlaylist} />
-            <AddSongToPlaylist songs={songs} setSelectedSong={setSelectedSong} />
-            <button
-              onClick={handleAddSong}
-              className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-600 transition duration-300"
-            >
-              {t('catalog.addSong')}
-            </button>
-            </div>)}
+              <PlaylistCatalog playlists={playlists} setSelectedPlaylist={setSelectedPlaylist} />
+              <AddSongToPlaylist songs={songs} setSelectedSong={setSelectedSong} />
+              <button
+                onClick={handleAddSong}
+                className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-600 transition duration-300"
+              >
+                {t('catalog.addSong')}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>

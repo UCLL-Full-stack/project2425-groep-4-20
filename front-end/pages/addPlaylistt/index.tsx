@@ -11,11 +11,8 @@ const AddPlaylistPage = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [filteredPlaylists, setFilteredPlaylists] = useState<Playlist[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-
   const [newPlaylistTitle, setNewPlaylistTitle] = useState<string>("");
   const [newPlaylistDescription, setNewPlaylistDescription] = useState<string>("");
-  const [newPlaylistUsername, setNewPlaylistUsername] = useState<string>("");
-  const [newPlaylistEmail, setNewPlaylistEmail] = useState<string>("");
 
   useEffect(() => {
     const fetchPlaylists = async () => {
@@ -38,43 +35,35 @@ const AddPlaylistPage = () => {
 
   const handleAddPlaylist = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!newPlaylistTitle || !newPlaylistDescription || !newPlaylistUsername || !newPlaylistEmail) {
-      alert(t("addplaylist.errorFillFields"));
+  
+    const user = JSON.parse(localStorage.getItem("loggedInUser") || "{}");
+  
+    // Ensure user information is available
+    if (!user.username || !user.email) {
+      alert("Missing user information");
       return;
     }
 
+    // Prepare the new playlist object
     const newPlaylist = {
       title: newPlaylistTitle,
       description: newPlaylistDescription,
       user: {
-        username: newPlaylistUsername,
-        email: newPlaylistEmail,
-        password: "defaultPassword",
+        username: user.username,
+        email: user.email,
+        password: "",
       },
     };
 
     try {
       const response = await PlaylistService.addPlaylist(newPlaylist);
-
       if (!response.ok) {
-        throw new Error(`Failed to add playlist: ${response.statusText}`);
+        throw new Error("Failed to add playlist");
       }
-
-      setNewPlaylistTitle("");
-      setNewPlaylistDescription("");
-      setNewPlaylistUsername("");
-      setNewPlaylistEmail("");
-
-      const updatedPlaylistsResponse = await PlaylistService.getAllPlaylists();
-      const updatedPlaylists = await updatedPlaylistsResponse.json();
-
-      setPlaylists(updatedPlaylists);
-      setFilteredPlaylists(updatedPlaylists);
-
-      alert(t("addplaylist.success"));
+      alert("Playlist added successfully!");
     } catch (error) {
-      console.error("Failed to add playlist", error);
-      alert(t("addplaylist.error"));
+      console.error(error);
+      alert("Error adding playlist");
     }
   };
 
@@ -143,32 +132,6 @@ const AddPlaylistPage = () => {
                 id="description"
                 value={newPlaylistDescription}
                 onChange={(e) => setNewPlaylistDescription(e.target.value)}
-                required
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="username" className="block text-gray-700 font-medium mb-2">
-                {t("addplaylist.username")}
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={newPlaylistUsername}
-                onChange={(e) => setNewPlaylistUsername(e.target.value)}
-                required
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-                {t("addplaylist.email")}
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={newPlaylistEmail}
-                onChange={(e) => setNewPlaylistEmail(e.target.value)}
                 required
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />

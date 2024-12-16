@@ -10,7 +10,8 @@
     "catalog": "Catalogus",
     "addPlaylist": "Voeg afspeellijst toe",
     "logout": "Uitloggen",
-    "song": "Liedjes"
+    "song": "Liedjes",
+    "album": "Albums"
   },
   "addplaylist": {
     "title": "Voeg afspeellijst toe",
@@ -27,26 +28,22 @@
     "addButton": "Voeg afspeellijst toe",
     "errorFillFields": "Vul alle velden in om een afspeellijst toe te voegen.",
     "success": "Afspeellijst succesvol toegevoegd!",
-    "error": "Het toevoegen van de afspeellijst is mislukt. Er is een fout opgetreden."
+    "error": "Het toevoegen van de afspeellijst is mislukt. Er is een fout opgetreden.",
+    "errorUser": "Selecteer een gebruiker om een afspeellijst toe te voegen."
   },
   "catalog": {
     "title": "Afspeellijstcatalogus",
     "tablePlaylist": "Afspeellijst",
     "tableUser": "Gebruiker",
-    "tableSongs": "Liedjes",
-    "tableActions": "Acties",
-    "removeSong": "Verwijderen",
-    "noSongs": "Geen liedjes in deze afspeellijst.",
-    "editTitle": "Titel bewerken",
-    "editPlaceholder": "Voer een nieuwe titel in",
-    "save": "Opslaan",
-    "addSong": "Liedje toevoegen aan afspeellijst",
-    "chooseSong": "Kies een liedje",
-    "choosePlaylist": "Kies een afspeellijst",
-    "success": "Liedje succesvol toegevoegd!",
-    "error": "Het toevoegen van het liedje is mislukt. Er is een fout opgetreden.",
-    "removesuccess": "Liedje succesvol verwijderd!",
-    "removeerror": "Het verwijderen van het liedje is mislukt. Er is een fout opgetreden."
+    "tableEmail": "E-mail",
+    "createTitle": "Maak een nieuwe afspeellijst",
+    "playlistTitle": "Afspeellijst Titel",
+    "playlistDescription": "Afspeellijst Beschrijving",
+    "addButton": "Voeg afspeellijst toe",
+    "errorFillFields": "Vul alle velden in om een afspeellijst toe te voegen.",
+    "success": "Afspeellijst succesvol toegevoegd!",
+    "error": "Er is een fout opgetreden bij het toevoegen van de afspeellijst.",
+    "errorUser": "Selecteer een gebruiker om een afspeellijst toe te voegen."
   },
   "songs": {
     "title": "Liedjes",
@@ -55,7 +52,8 @@
       "title": "Titel",
       "genre": "Genre",
       "releaseDate": "Release Datum",
-      "length": "Lengte"
+      "length": "Lengte",
+      "album": "Album"
     }
   },
   "addSong": {
@@ -67,5 +65,20 @@
     "errorFillFields": "Alle velden zijn verplicht",
     "success": "Lied succesvol toegevoegd",
     "error": "Het toevoegen van het lied is mislukt"
+  },
+  "albumcatalog": {
+    "albumCatalogTitle": "Albumcatalogus",
+    "tableAlbumTitle": "Albumtitel",
+    "tableSongsCount": "Aantal liedjes",
+    "albumSongs": "Liedjes in het album",
+    "songs": "Liedjes",
+    "addAlbumTitle": "Voeg Nieuw Album Toe",
+    "albumTitlePlaceholder": "Albumtitel",
+    "artistPlaceholder": "Artiest",
+    "releaseDatePlaceholder": "Release datum",
+    "addButton": "Voeg Album Toe",
+    "fillFields": "Vul alle velden in om het album toe te voegen.",
+    "albumAdded": "Album succesvol toegevoegd!",
+    "errorAddingAlbum": "Het toevoegen van het album is mislukt. Er is een fout opgetreden."
   }
 }

@@ -42,7 +42,7 @@ const SongsPage = () => {
             originalSongs={songs}
           />
         </section>
-        {loggedInUser?.role === "artist" && (
+        {loggedInUser?.role !== "user" && (
         <section className="mt-8 w-full max-w-6xl bg-white p-6 rounded-lg shadow-lg">
           <AddSong
             onSongAdded={() =>
