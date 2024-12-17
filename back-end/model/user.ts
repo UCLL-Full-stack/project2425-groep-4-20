@@ -56,6 +56,7 @@ export class User {
         password,
         role,
     }: UserPrisma & { playlists: PlaylistPrisma[] }): User {
+        
         return new User({
             id,
             username,
