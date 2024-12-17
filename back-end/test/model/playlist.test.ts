@@ -1,74 +1,65 @@
-// import { Playlist } from '../../model/playlist';
-// import { User } from '../../model/user';
+import { Playlist } from "../../model/playlist";
+import { Song } from "../../model/song";
 
-// const user = new User({ 
-//     username: 'johan', 
-//     email: 'johan@ucll.be', 
-//     playlists: []
-// });
+describe("Playlist", () => {
+    it("should create a valid Playlist instance", () => {
+        // Given
+        const playlistData = {
+            id: 1,
+            title: "My Playlist",
+            description: "A test playlist",
+            songs: [new Song({ title: "Song 1", genre: "Pop", releaseDate: new Date(), length: 200 })],
+        };
 
-// test('given valid values for playlist, when playlist is created, then playlist is created with those values', () => {
-//     // given
-//     const title = 'My Playlist';
-//     const description = 'A playlist for testing';
+        // When
+        const playlist = new Playlist(playlistData);
 
-//     // when
-//     const playlist = new Playlist({
-//         title,
-//         description,
-//         user
-//     });
+        // Then
+        expect(playlist.getId()).toBe(1);
+        expect(playlist.getTitle()).toBe("My Playlist");
+        expect(playlist.getDescription()).toBe("A test playlist");
+        expect(playlist.getSongs().length).toBe(1);
+    });
 
-//     // then
-//     expect(playlist.getTitle()).toEqual(title);
-//     expect(playlist.getDescription()).toEqual(description);
-//     expect(playlist.getUser()).toEqual(user);
-// });
+    it("should throw an error if title is missing", () => {
+        // Given
+        const invalidData = { description: "No Title Playlist" };
 
-// test('given an existing playlist, when another playlist with same values is compared, then they are equal', () => {
-//     // given
-//     const playlist1 = new Playlist({
-//         title: 'My Playlist',
-//         description: 'A playlist for testing',
-//         user
-//     });
+        // Then
+        expect(() => new Playlist(invalidData as any)).toThrowError("Title is required");
+    });
 
-//     const playlist2 = new Playlist({
-//         title: 'My Playlist',
-//         description: 'A playlist for testing',
-//         user
-//     });
+    it("should handle an empty songs list", () => {
+        // Given
+        const playlistData = {
+            id: 2,
+            title: "Empty Playlist",
+            description: "No songs here",
+            songs: [],
+        };
 
-//     // when
-//     const isEqual = playlist1.equals(playlist2);
+        // When
+        const playlist = new Playlist(playlistData);
 
-//     // then
-//     expect(isEqual).toBe(true);
-// });
+        // Then
+        expect(playlist.getSongs()).toEqual([]);
+    });
 
-// test('given an existing playlist, when adding a different playlist, then they are not equal', () => {
-//     // given
-//     const playlist1 = new Playlist({
-//         title: 'My Playlist',
-//         description: 'A playlist for testing',
-//         user
-//     });
+    // it("should correctly add a song to the playlist", () => {
+    //     // Given
+    //     const playlist = new Playlist({
+    //         id: 3,
+    //         title: "Add Song Playlist",
+    //         description: "Testing song addition",
+    //         songs: [],
+    //     });
+    //     const song = new Song({ title: "New Song", genre: "Pop", releaseDate: new Date(), length: 180 });
 
-//     const differentUser = new User({
-//         username: 'ferre',
-//         email: 'ferre@ucll.be',
-//         playlists: []
-//     });
+    //     // When
+    //     playlist.addSong(song);
 
-//     const playlist2 = new Playlist({
-//         title: 'My Playlist',
-//         description: 'Another playlist for testing',
-//         user: differentUser
-//     });
-
-//     // when
-//     const isEqual = playlist1.equals(playlist2);
-
-//     // then
-//     expect(isEqual).toBe(false);
-// });
+    //     // Then
+    //     expect(playlist.getSongs().length).toBe(1);
+    //     expect(playlist.getSongs()[0]).toBe(song);
+    // });
+});

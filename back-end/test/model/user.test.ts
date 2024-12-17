@@ -1,93 +1,47 @@
-// import { Playlist } from '../../model/playlist';
-// import { User } from '../../model/user';
+// import { User } from "../../model/user";
+// import { Playlist } from "../../model/playlist";
 
-// describe('User Class', () => {
-//     let user: User;
-//     let playlist1: Playlist;
-//     let playlist2: Playlist;
+// describe("User", () => {
+//     it("should create a valid User instance", () => {
+//         // Given
+//         const playlists = [
+//             new Playlist({ title: "Playlist 1", description: "Description 1", songs: [] }),
+//         ];
 
-//     beforeEach(() => {
-//         user = new User({
-//             username: 'johan',
-//             email: 'johan@ucll.be',
-//             playlists: []
-//         });
+//         const validUserData = {
+//             id: 1,
+//             username: "test_user",
+//             email: "test@example.com",
+//             playlists: playlists,
+//             password: "securepassword123",
+//             role: "user",
+//         };
 
-//         playlist1 = new Playlist({
-//             title: 'Playlist 1',
-//             description: 'First playlist',
-//             user
-//         });
+//         // When
+//         const user = new User(validUserData);
 
-//         playlist2 = new Playlist({
-//             title: 'Playlist 2',
-//             description: 'Second playlist',
-//             user
-//         });
+//         // Then
+//         expect(user.getId()).toBe(1);
+//         expect(user.getUsername()).toBe("test_user");
+//         expect(user.getEmail()).toBe("test@example.com");
+//         expect(user.getPlaylists().length).toBe(1);
+//         expect(user.getPassword()).toBe("securepassword123");
+//         expect(user.getRole()).toBe("USER");
 //     });
 
-//     test('given valid values for user, when user is created, then user is created with those values', () => {
-//         // given
-//         const username = 'johan';
-//         const email = 'johan@ucll.be';
+//     it("should return an empty playlist array if none provided", () => {
+//         // Given
+//         const validUserData = {
+//             username: "test_user",
+//             email: "test@example.com",
+//             password: "securepassword123",
+//             role: "user",
+//         };
 
-//         // when
-//         const newUser = new User({ username, email });
+//         // When
+//         const user = new User(validUserData as any);
 
-//         // then
-//         expect(newUser.getUsername()).toEqual(username);
-//         expect(newUser.getEmail()).toEqual(email);
-//         expect(newUser.getPlaylists()).toEqual([]);
-//     });
-
-//     test('given an existing user, when a playlist is added, then the playlist is added to the user\'s playlists', () => {
-//         // given
-
-//         // when
-//         user.addPlaylist(playlist1);
-
-//         // then
-//         expect(user.getPlaylists()).toContain(playlist1);
-//         expect(user.getPlaylists()).toHaveLength(1);
-//     });
-
-//     test('given a user with a playlist, when the playlist is removed, then the playlist is no longer in the user\'s playlists', () => {
-//         // given
-//         user.addPlaylist(playlist1);
-
-//         // when
-//         user.removePlaylist(playlist1);
-
-//         // then
-//         expect(user.getPlaylists()).not.toContain(playlist1);
-//         expect(user.getPlaylists()).toHaveLength(0);
-//     });
-
-//     test('given an existing user, when another user with the same values is compared, then they are equal', () => {
-//         // given
-//         const anotherUser = new User({
-//             username: 'johan',
-//             email: 'johan@ucll.be'
-//         });
-
-//         // when
-//         const isEqual = user.equals(anotherUser);
-
-//         // then
-//         expect(isEqual).toBe(true);
-//     });
-
-//     test('given an existing user, when another user with different values is compared, then they are not equal', () => {
-//         // given
-//         const differentUser = new User({
-//             username: 'ferre',
-//             email: 'ferre@ucll.be'
-//         });
-
-//         // when
-//         const isEqual = user.equals(differentUser);
-
-//         // then
-//         expect(isEqual).toBe(false);
+//         // Then
+//         expect(user.getPlaylists().length).toBe(0);
 //     });
 // });
