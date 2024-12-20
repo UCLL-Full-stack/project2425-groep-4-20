@@ -37,7 +37,7 @@ const UserOverview: React.FC = () => {
           {users.map((user, index) => (
             <tr key={user.id}>
               <td className="px-6 py-3 text-gray-700">{user.username}</td>
-              <td className="px-6 py-3 text-gray-700">{`p${index + 1}`}</td> {/* Dynamic password */}
+              <td className="px-6 py-3 text-gray-700">{`p${index + 1}`}</td>
               <td className="px-6 py-3 text-gray-700">{user.role || 'N/A'}</td>
             </tr>
           ))}

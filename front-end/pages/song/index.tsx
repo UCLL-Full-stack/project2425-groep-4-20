@@ -5,7 +5,6 @@ import Header from '@components/Header';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
 import SongService from '@services/SongService';
-import AddSong from '@components/song/addSong';
 import SongOverviewTable from '@components/song/songOverviewTable';
 
 const SongsPage = () => {
@@ -42,17 +41,6 @@ const SongsPage = () => {
             originalSongs={songs}
           />
         </section>
-        {loggedInUser?.role !== "user" && (
-        <section className="mt-8 w-full max-w-6xl bg-white p-6 rounded-lg shadow-lg">
-          <AddSong
-            onSongAdded={() =>
-              SongService.getAllSongs().then((updatedSongs) => {
-                setSongs(updatedSongs);
-                setFilteredSongs(updatedSongs);
-              })
-            }
-          />
-        </section>)}
       </main>
     </>
   );

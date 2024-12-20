@@ -1,63 +1,113 @@
-// import { Playlist } from '../../model/playlist';
-// import { User } from '../../model/user';
-// import playlistRepository from '../../repository/playlist.db';
-// import playlistService from '../../service/playlist.service';
+import { Playlist } from '../../model/playlist';
+import * as playlistRepository from '../../repository/playlist.db';
+import playlistService from '../../service/playlist.service';
 
-// jest.mock('../../repository/playlist.db', () => ({
-//     getAllPlaylists: jest.fn(),
-//     getPlaylistById: jest.fn(),
-//     createPlaylist: jest.fn(),
-// }));
+let mockGetAllPlaylists: jest.Mock<any, any, any>;
+let mockGetPlaylistById: jest.Mock<any, any, any>;
 
-// const mockUser = new User({
-//     id: 1,
-//     username: 'johndoe',
-//     email: 'john.doe@example.com',
-//     playlists: [],
-// });
+beforeEach(() => {
+    mockGetAllPlaylists = jest.fn();
+    mockGetPlaylistById = jest.fn();
 
-// const mockPlaylist = new Playlist({
-//     id: 1,
-//     title: 'Chill Beats',
-//     description: 'Relax and unwind',
-//     user: mockUser,
-// });
+    jest.spyOn(playlistRepository, 'getAllPlaylists').mockImplementation(mockGetAllPlaylists);
+    jest.spyOn(playlistRepository, 'getPlaylistById').mockImplementation(mockGetPlaylistById);
+});
 
-// test('given existing playlists, when getAllPlaylists is called, then it returns all playlists', () => {
-//     (playlistRepository.getAllPlaylists as jest.Mock).mockReturnValue([mockPlaylist]);
+afterEach(() => {
+    jest.clearAllMocks();
+});
 
-//     const playlists = playlistService.getAllPlaylists();
+describe('Playlist Service', () => {
+    test('when getAllPlaylists is called, it should return all playlists with their songs and user', async () => {
+        // given
+        const playlistsMockData = [
+            {
+                id: 1,
+                title: 'Playlist 1',
+                description: 'Description 1',
+                user: { id: 1, name: 'User 1' },
+                songs: [
+                    { id: 1, title: 'Song 1', duration: 180 },
+                    { id: 2, title: 'Song 2', duration: 200 },
+                ],
+            },
+            {
+                id: 2,
+                title: 'Playlist 2',
+                description: 'Description 2',
+                user: { id: 2, name: 'User 2' },
+                songs: [],
+            },
+        ];
+        mockGetAllPlaylists.mockResolvedValue(playlistsMockData);
 
-//     expect(playlistRepository.getAllPlaylists).toHaveBeenCalledTimes(1);
-//     expect(playlists).toEqual([mockPlaylist]);
-// });
+        // when
+        const result = await playlistService.getAllPlaylists();
 
-// test('given a valid playlist ID, when getPlaylistById is called, then it returns the playlist', async () => {
-//     (playlistRepository.getPlaylistById as jest.Mock).mockResolvedValue(mockPlaylist);
+        // then
+        expect(mockGetAllPlaylists).toHaveBeenCalledTimes(1);
+        expect(result).toHaveLength(2);
+        expect(result[0]).toBeInstanceOf(Playlist);
+        expect(result[0].title).toBe('Playlist 1');
+        expect(result[0].songs).toHaveLength(2);
+        expect(result[1].songs).toHaveLength(0);
+    });
 
-//     const playlist = await playlistService.getPlaylistById(1);
+    test('when getAllPlaylists throws an error, it should propagate the error', async () => {
+        // given
+        mockGetAllPlaylists.mockRejectedValue(new Error('Database error'));
 
-//     expect(playlistRepository.getPlaylistById).toHaveBeenCalledWith({ id: 1 });
-//     expect(playlist).toEqual(mockPlaylist);
-// });
+        // when / then
+        await expect(playlistService.getAllPlaylists()).rejects.toThrow('An error occurred while fetching playlists');
+        expect(mockGetAllPlaylists).toHaveBeenCalledTimes(1);
+    });
 
-// test('given an invalid playlist ID, when getPlaylistById is called, then it throws an error', async () => {
-//     (playlistRepository.getPlaylistById as jest.Mock).mockResolvedValue(null);
+    test('when getPlaylistById is called with a valid ID, it should return the playlist with its songs and user', async () => {
+        // given
+        const playlistMockData = {
+            id: 1,
+            title: 'Playlist 1',
+            description: 'Description 1',
+            user: { id: 1, name: 'User 1' },
+            songs: [
+                { id: 1, title: 'Song 1', duration: 180 },
+                { id: 2, title: 'Song 2', duration: 200 },
+            ],
+        };
+        mockGetPlaylistById.mockResolvedValue(playlistMockData);
 
-//     await expect(playlistService.getPlaylistById(999)).rejects.toThrow('Playlist with id 999 does not exist.');
-// });
+        // when
+        const result = await playlistService.getPlaylistById(1);
 
-// test('given valid details, when createPlaylist is called, then it creates and returns the new playlist', () => {
-//     const newPlaylistData = {
-//         title: 'Upbeat Vibes',
-//         description: 'Get your energy up!',
-//         user: mockUser,
-//     };
-//     const createdPlaylist = new Playlist({ ...newPlaylistData, id: 2 });
-//     (playlistRepository.createPlaylist as jest.Mock).mockReturnValue(createdPlaylist);
+        // then
+        expect(mockGetPlaylistById).toHaveBeenCalledTimes(1);
+        expect(mockGetPlaylistById).toHaveBeenCalledWith(1);
+        expect(result).toBeInstanceOf(Playlist);
+        expect(result?.title).toBe('Playlist 1');
+        expect(result?.songs).toHaveLength(2);
+        expect(result?.songs[0].title).toBe('Song 1');
+    });
 
-//     const result = playlistService.createPlaylist(newPlaylistData.title, newPlaylistData.description, newPlaylistData.user);
+    test('when getPlaylistById is called with an invalid ID, it should return null', async () => {
+        // given
+        mockGetPlaylistById.mockResolvedValue(null);
 
-//     expect(playlistRepository.createPlaylist).toHaveBeenCalledWith(newPlaylistData);
-//     expect(result).toEqual(createdPlaylist);
-// });
+        // when
+        const result = await playlistService.getPlaylistById(999);
+
+        // then
+        expect(mockGetPlaylistById).toHaveBeenCalledTimes(1);
+        expect(mockGetPlaylistById).toHaveBeenCalledWith(999);
+        expect(result).toBeNull();
+    });
+
+    test('when getPlaylistById throws an error, it should propagate the error', async () => {
+        // given
+        mockGetPlaylistById.mockRejectedValue(new Error('Database error'));
+
+        // when / then
+        await expect(playlistService.getPlaylistById(1)).rejects.toThrow('An error occurred while fetching the playlist by ID');
+        expect(mockGetPlaylistById).toHaveBeenCalledTimes(1);
+        expect(mockGetPlaylistById).toHaveBeenCalledWith(1);
+    });
+});

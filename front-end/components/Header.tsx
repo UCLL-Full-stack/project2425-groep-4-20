@@ -22,7 +22,7 @@ const Header: React.FC = () => {
     <header className="bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 shadow-lg p-6">
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
         <a className="text-white text-3xl font-bold mb-2 md:mb-0">
-          Playlist App
+          {t('header.musicApp')}
         </a>
         <nav className="flex space-x-6">
           <Link href="/" className="text-white text-lg hover:underline">
@@ -32,7 +32,7 @@ const Header: React.FC = () => {
           <Link href="/catalog" className="text-white text-lg hover:underline">
            {t('header.catalog')}
           </Link>}
-          {loggedInUser && loggedInUser?.role !== "artist" && (
+          {loggedInUser && loggedInUser?.role === "admin" && (
           <Link href="/addPlaylistt" className="text-white text-lg hover:underline">
            {t('header.addPlaylist')}
           </Link>)}

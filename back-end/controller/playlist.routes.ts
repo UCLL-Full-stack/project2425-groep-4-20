@@ -95,34 +95,93 @@ playlistRouter.get('/:id', getPlaylistById);
  * @swagger
  * /playlists:
  *   post:
- *     summary: Add a new playlist
- *     description: Add a new playlist by providing title, description, and user information.
+ *     summary: Create a new empty playlist
+ *     description: Create a new playlist with a title, description, and link it to a user. No songs are added initially.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Playlist'
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Title of the playlist.
+ *               description:
+ *                 type: string
+ *                 description: Description of the playlist.
+ *               userId:
+ *                 type: integer
+ *                 description: ID of the user creating the playlist.
  *     responses:
  *       201:
  *         description: Playlist created successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Playlist'
+ *       500:
+ *         description: Error creating playlist
  */
 const addPlaylist = async (req: Request, res: Response) => {
-    const playlistInput: PlaylistInput = req.body;
+    const { title, description, userId } = req.body;
 
     try {
+        const playlistInput: PlaylistInput = {
+            title,
+            description,
+            userId,
+            songs: [],
+            songId: undefined,
+            user: {
+                id: undefined,
+                username: '',
+                email: '',
+                playlists: undefined,
+                password: '',
+                role: 'user'
+            }
+        };
+
         const newPlaylist = await playlistService.addPlaylist(playlistInput);
         res.status(201).json(newPlaylist);
     } catch (error) {
-        res.status(500).json({ message: 'An error occurred while adding the playlist', error });
+        res.status(500).json({ message: 'An error occurred while creating the playlist', error });
     }
 };
 
 playlistRouter.post('/', addPlaylist);
+
+/**
+ * @swagger
+ * /playlists/{id}:
+ *   delete:
+ *     summary: Delete a playlist
+ *     description: Deletes a specific playlist using its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the playlist to delete
+ *         schema:
+ *           type: integer
+ *           format: int64
+ *     responses:
+ *       200:
+ *         description: Playlist deleted successfully
+ *       404:
+ *         description: Playlist not found
+ *       500:
+ *         description: Error deleting playlist
+ */
+const deletePlaylist = async (req: Request, res: Response) => {
+    const playlistId = Number(req.params.id);
+
+    try {
+        await playlistService.deletePlaylist(playlistId);
+        res.status(200).json({ message: 'Playlist deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred while deleting the playlist', error });
+    }
+};
+
+playlistRouter.delete('/:id', deletePlaylist);
   
 
 

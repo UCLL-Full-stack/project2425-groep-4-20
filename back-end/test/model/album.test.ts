@@ -97,26 +97,4 @@ describe("Album", () => {
         expect(result).toBe(false);
     });
 
-    // it("should correctly convert Prisma data into an Album instance using from", () => {
-    //     // Given
-    //     const prismaData = {
-    //         id: 6,
-    //         title: "Prisma Album",
-    //         releaseDate: new Date("2024-04-01"),
-    //         songs: [
-    //             { id: 1, title: "Song 1", genre: "Pop", releaseDate: new Date("2024-04-01"), length: 200 },
-    //             { id: 2, title: "Song 2", genre: "Rock", releaseDate: new Date("2024-04-02"), length: 240 },
-    //         ],
-    //     };
-
-    //     // When
-    //     const album = Album.from(prismaData);
-
-    //     // Then
-    //     expect(album.getId()).toBe(6);
-    //     expect(album.getTitle()).toBe("Prisma Album");
-    //     expect(album.getSongs().length).toBe(2);
-    //     expect(album.getSongs()[0].getTitle()).toBe("Song 1");
-    //     expect(album.getSongs()[1].getGenre()).toBe("Rock");
-    // });
 });

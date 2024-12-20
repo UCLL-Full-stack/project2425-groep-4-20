@@ -95,45 +95,4 @@ const getAlbumById = async (req: Request, res: Response, next: NextFunction) => 
 
 albumRouter.get('/:id', getAlbumById);
 
-/**
- * @swagger
- * /albums:
- *   post:
- *     summary: Add a new album
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *               releaseDate:
- *                 type: string
- *                 format: date
- *               artistId:
- *                 type: integer
- *     responses:
- *       201:
- *         description: Album successfully created
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Album'
- *       400:
- *         description: Bad request
- */
-const addAlbum = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const { title, releaseDate, artistId } = req.body;
-        const newAlbum = await albumService.addAlbum(title, releaseDate, artistId);
-        res.status(201).json(newAlbum);
-    } catch (error) {
-        next(error);
-    }
-};
-
-albumRouter.post('/', addAlbum);
-
 export { albumRouter };

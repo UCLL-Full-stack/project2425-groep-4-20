@@ -28,16 +28,40 @@ const getPlaylistsByUserId = async (userId: number) => {
   return response.json();
 };
 
-const addPlaylist = async (playlist: Omit<Playlist, 'id'>) => {
-  return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists`, {
+const addPlaylist = async (title: string, description: string, userId: number) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       "Authorization": `Bearer ${token}`,
     },
-    body: JSON.stringify(playlist),
+    body: JSON.stringify({ title, description, userId }),
   });
+
+  if (!response.ok) {
+    throw new Error('Failed to add playlist');
+  }
+
+  return response.json();
 };
+
+const deletePlaylist = async (playlistId: number) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/${playlistId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      "Authorization": `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to delete playlist');
+  }
+
+  return response.json();
+};
+
+
 
 const addSongToPlaylist = async (playlistId: number, songId: number) => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/playlists/${playlistId}/songs`, {
@@ -94,6 +118,7 @@ const PlaylistService = {
   getAllPlaylists,
   getPlaylistsByUserId,
   addPlaylist,
+  deletePlaylist,
   addSongToPlaylist,
   updatePlaylistTitle,
   removeSongFromPlaylist,

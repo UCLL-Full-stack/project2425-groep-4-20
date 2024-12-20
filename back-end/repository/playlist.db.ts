@@ -3,7 +3,7 @@ import { PlaylistInput } from '../types';
 
 const database = new PrismaClient();
 
-const getAllPlaylists = async () => {
+ export const getAllPlaylists = async () => {
     try {
         return await database.playlist.findMany({
             include: {
@@ -17,7 +17,7 @@ const getAllPlaylists = async () => {
     }
 };
 
-const getPlaylistById = async (id: number) => {
+export const getPlaylistById = async (id: number) => {
     try {
         return await database.playlist.findUnique({
             where: { id },
@@ -53,37 +53,7 @@ const addSongToPlaylist = async (playlistId: number, songId: number) => {
     }
 };
 
-const addPlaylist = async (playlistInput: PlaylistInput) => {
-    try {
-      if (!playlistInput.userId) {
-        throw new Error("User ID is required to create a playlist");
-      }
-  
-      const newPlaylist = await database.playlist.create({
-        data: {
-          title: playlistInput.title,
-          description: playlistInput.description,
-          user: {
-            connect: {
-              id: playlistInput.userId, // Zorg dat deze waarde correct is
-            },
-          },
-          songs: playlistInput.songId?.map((songId: any) => ({
-            connect: { id: songId },
-          })),
-        },
-        include: {
-          user: true,
-          songs: true,
-        },
-      });
-  
-      return newPlaylist;
-    } catch (error) {
-      console.error("Error creating playlist:", error);
-      throw error;
-    }
-  };
+
   
 
 const removeSongFromPlaylist = async (playlistId: number, songId: number) => {
@@ -122,11 +92,43 @@ const updatePlaylistTitle = async (playlistId: number, newTitle: string) => {
     }
 };
 
+const addPlaylist = async (playlistInput: PlaylistInput) => {
+    try {
+        return await database.playlist.create({
+            data: {
+                title: playlistInput.title,
+                description: playlistInput.description,
+                user: {
+                    connect: { id: playlistInput.userId },
+                },
+            },
+            include: {
+                user: true,
+                songs: true,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while adding the playlist');
+    }
+};
+
+const deletePlaylist = async (id: number) => {
+    try {
+        return await database.playlist.delete({
+            where: { id },
+        });
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while deleting the playlist');
+    }
+};
 export default {
     getAllPlaylists,
     getPlaylistById,
-    addPlaylist,
     addSongToPlaylist,
     removeSongFromPlaylist,
     updatePlaylistTitle,
+    addPlaylist,
+    deletePlaylist
 };

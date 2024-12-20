@@ -30,30 +30,6 @@ describe("Song", () => {
         expect(() => new Song(invalidData as any)).toThrowError("Title is required");
     });
 
-    // it("should correctly compare two identical songs", () => {
-    //     // Given
-    //     const song1 = new Song({
-    //         id: 2,
-    //         title: "Equal Song",
-    //         genre: "Jazz",
-    //         releaseDate: new Date("2024-01-01"),
-    //         length: 300,
-    //     });
-    //     const song2 = new Song({
-    //         id: 2,
-    //         title: "Equal Song",
-    //         genre: "Jazz",
-    //         releaseDate: new Date("2024-01-01"),
-    //         length: 300,
-    //     });
-
-    //     // When
-    //     const result = song1.equals(song2);
-
-    //     // Then
-    //     expect(result).toBe(true);
-    // });
-
     it("should return false for songs with different properties", () => {
         // Given
         const song1 = new Song({ id: 3, title: "Song A", genre: "Pop", releaseDate: new Date(), length: 200 });

@@ -2,7 +2,7 @@ import songRepository from '../repository/song.db';
 import { SongInput } from '../types';
 import albumService from './album.service';
 
-const getAllSongs = async () => {
+export const getAllSongs = async () => {
     try {
         const songs = await songRepository.getAllSongs();
         return songs;
@@ -12,7 +12,7 @@ const getAllSongs = async () => {
     }
 };
 
-const getSongById = async (id: number) => {
+export const getSongById = async (id: number) => {
     try {
         const song = await songRepository.getSongById(id);
         return song;

@@ -11,15 +11,24 @@ const AddPlaylistPage = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [filteredPlaylists, setFilteredPlaylists] = useState<Playlist[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [newPlaylistTitle, setNewPlaylistTitle] = useState<string>("");
-  const [newPlaylistDescription, setNewPlaylistDescription] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [userId, setUserId] = useState<number | null>(null);
+  const [titleError, setTitleError] = useState<string | null>(null);
+  const [descriptionError, setDescriptionError] = useState<string | null>(null);
+  const [userIdError, setUserIdError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
     const fetchPlaylists = async () => {
-      const response = await PlaylistService.getAllPlaylists();
-      const playlistData = await response.json();
-      setPlaylists(playlistData);
-      setFilteredPlaylists(playlistData);
+      try {
+        const response = await PlaylistService.getAllPlaylists();
+        const playlistData = await response.json();
+        setPlaylists(playlistData);
+        setFilteredPlaylists(playlistData);
+      } catch (error) {
+        setMessage(t("addplaylist.error"));
+      }
     };
 
     fetchPlaylists();
@@ -33,37 +42,69 @@ const AddPlaylistPage = () => {
     setFilteredPlaylists(filtered);
   };
 
-  const handleAddPlaylist = async (event: React.FormEvent) => {
-    event.preventDefault();
-  
-    const user = JSON.parse(localStorage.getItem("loggedInUser") || "{}");
-  
-    // Ensure user information is available
-    if (!user.username || !user.email) {
-      alert("Missing user information");
+  const clearErrors = () => {
+    setTitleError(null);
+    setDescriptionError(null);
+    setUserIdError(null);
+  };
+
+  const validateFields = (): boolean => {
+    clearErrors();
+    let isValid = true;
+
+    if (!title.trim()) {
+      setTitleError(t("addplaylist.errors.titleRequired"));
+      isValid = false;
+    }
+
+    if (!description.trim()) {
+      setDescriptionError(t("addplaylist.errors.descriptionRequired"));
+      isValid = false;
+    }
+
+    if (!userId) {
+      setUserIdError(t("addplaylist.errors.userIdRequired"));
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handleAddPlaylist = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateFields()) {
       return;
     }
 
-    // Prepare the new playlist object
-    const newPlaylist = {
-      title: newPlaylistTitle,
-      description: newPlaylistDescription,
-      user: {
-        username: user.username,
-        email: user.email,
-        password: "",
-      },
-    };
-
     try {
-      const response = await PlaylistService.addPlaylist(newPlaylist);
-      if (!response.ok) {
-        throw new Error("Failed to add playlist");
-      }
-      alert("Playlist added successfully!");
+      const newPlaylist = await PlaylistService.addPlaylist(title, description, userId as number);
+
+      setPlaylists((prevPlaylists) => [...prevPlaylists, newPlaylist]);
+      setFilteredPlaylists((prevPlaylists) => [...prevPlaylists, newPlaylist]);
+      setMessage(t("addplaylist.success", { title: newPlaylist.title }));
+      setTitle("");
+      setDescription("");
+      setUserId(null);
     } catch (error) {
-      console.error(error);
-      alert("Error adding playlist");
+      setMessage(t("addplaylist.error"));
+    }
+  };
+
+  const handleDeletePlaylist = async (playlistId: number) => {
+    try {
+      await PlaylistService.deletePlaylist(playlistId);
+
+      setPlaylists((prevPlaylists) =>
+        prevPlaylists.filter((playlist) => playlist.id !== playlistId)
+      );
+      setFilteredPlaylists((prevPlaylists) =>
+        prevPlaylists.filter((playlist) => playlist.id !== playlistId)
+      );
+
+      setMessage(t("addplaylist.deleteSuccess"));
+    } catch (error) {
+      setMessage(t("addplaylist.deleteError"));
     }
   };
 
@@ -74,7 +115,6 @@ const AddPlaylistPage = () => {
         <h1 className="text-4xl font-bold text-center text-blue-600 mb-8">
           {t("addplaylist.title")}
         </h1>
-
         <div className="mb-6 max-w-lg mx-auto">
           <input
             type="text"
@@ -92,6 +132,7 @@ const AddPlaylistPage = () => {
                 <th className="px-4 py-2 text-left">{t("addplaylist.tableTitle")}</th>
                 <th className="px-4 py-2 text-left">{t("addplaylist.tableUser")}</th>
                 <th className="px-4 py-2 text-left">{t("addplaylist.tableEmail")}</th>
+                <th className="px-4 py-2 text-left">{t("addplaylist.actions")}</th> 
               </tr>
             </thead>
             <tbody>
@@ -100,16 +141,20 @@ const AddPlaylistPage = () => {
                   <td className="px-4 py-2">{playlist.title}</td>
                   <td className="px-4 py-2">{playlist.user.username}</td>
                   <td className="px-4 py-2">{playlist.user.email}</td>
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => handleDeletePlaylist(playlist.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      {t("addplaylist.delete")}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
         <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
-          <h2 className="text-2xl font-bold text-blue-600 mb-6">
-            {t("addplaylist.createTitle")}
-          </h2>
           <form onSubmit={handleAddPlaylist}>
             <div className="mb-4">
               <label htmlFor="title" className="block text-gray-700 font-medium mb-2">
@@ -118,11 +163,13 @@ const AddPlaylistPage = () => {
               <input
                 type="text"
                 id="title"
-                value={newPlaylistTitle}
-                onChange={(e) => setNewPlaylistTitle(e.target.value)}
-                required
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  titleError ? "border-red-500" : "focus:ring-blue-500"
+                }`}
               />
+              {titleError && <p className="text-red-500 text-sm">{titleError}</p>}
             </div>
             <div className="mb-4">
               <label htmlFor="description" className="block text-gray-700 font-medium mb-2">
@@ -130,11 +177,28 @@ const AddPlaylistPage = () => {
               </label>
               <textarea
                 id="description"
-                value={newPlaylistDescription}
-                onChange={(e) => setNewPlaylistDescription(e.target.value)}
-                required
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  descriptionError ? "border-red-500" : "focus:ring-blue-500"
+                }`}
               />
+              {descriptionError && <p className="text-red-500 text-sm">{descriptionError}</p>}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="userId" className="block text-gray-700 font-medium mb-2">
+                {t("addplaylist.userId")}
+              </label>
+              <input
+                type="number"
+                id="userId"
+                value={userId || ""}
+                onChange={(e) => setUserId(Number(e.target.value))}
+                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  userIdError ? "border-red-500" : "focus:ring-blue-500"
+                }`}
+              />
+              {userIdError && <p className="text-red-500 text-sm">{userIdError}</p>}
             </div>
             <button
               type="submit"
@@ -143,6 +207,9 @@ const AddPlaylistPage = () => {
               {t("addplaylist.addButton")}
             </button>
           </form>
+          {message && (
+            <p className="mt-4 text-center text-blue-600 font-medium">{message}</p>
+          )}
         </div>
       </div>
     </>

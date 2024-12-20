@@ -40,27 +40,5 @@ const getSongById = async (id: number) => {
     }
 };
 
-export const addSong = async (songInput: SongInput) => {
-    try {
-        const newSong = await database.song.create({
-            data: {
-                title: songInput.title,
-                genre: songInput.genre,
-                releaseDate: songInput.releaseDate,
-                length: songInput.length,
-                album: {
-                    connect: {
-                        id: songInput.album.id, // Koppel het album aan de song
-                    },
-                },
-            },
-        });
-        return newSong;
-    } catch (error) {
-        console.error(error);
-        throw new Error('An error occurred while adding the song');
-    }
-};
 
-
-export default { getAllSongs, getSongById, addSong };
+export default { getAllSongs, getSongById };

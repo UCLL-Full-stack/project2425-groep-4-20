@@ -32,15 +32,6 @@ const getUserById = async (id: number) => {
     }
 };
 
-// const createUser = async (username: string, email: string, password: string, role: Role) => {
-//     try {
-//         const newUser = await userRepository.createUser(username, email, password, role);
-//         return newUser;
-//     } catch (error) {
-//         console.error(error);
-//         throw new Error('Error creating user');
-//     }
-// };
 const createUser = async ({
     username,
     password,
@@ -80,22 +71,6 @@ const getUserbyUserName = async (username: string) => {
     }
     return user
 };
-
-// const loginUser = async ({username, password}: UserInput): Promise <AuthenticationResponse> => {
-    
-//     const  user = await getUserbyUserName(username);
-    
-//     const isValidPassword = await bcrypt.compare(password, user.password);
-//     if (!isValidPassword) {
-//         throw new Error(`Ìncorrect`);
-//     } 
-//     return {
-//         token: generateJwtToken({ username  , role : user.role }),
-//         username: username,
-//         role:user.role
-
-//     };
-// }
 
 const authenticate= async ({username, password}:UserLogin): Promise<AuthenticationResponse> => {
     const user = await getUserbyUserName(username);

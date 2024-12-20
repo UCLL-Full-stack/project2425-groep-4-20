@@ -38,20 +38,8 @@ const getAllSongs = async (): Promise<SongWithRelations[]> => {
 
 
 
-const addSong = async (song: Omit<Song, 'id'>) => {
-  return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/songs`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      "Authorization": `Bearer ${token}`,
-    },
-    body: JSON.stringify(song),
-  });
-};
-
 const SongService = {
   getAllSongs,
-  addSong,
 };
 
 export default SongService;

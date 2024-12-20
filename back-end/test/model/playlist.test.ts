@@ -45,21 +45,4 @@ describe("Playlist", () => {
         expect(playlist.getSongs()).toEqual([]);
     });
 
-    // it("should correctly add a song to the playlist", () => {
-    //     // Given
-    //     const playlist = new Playlist({
-    //         id: 3,
-    //         title: "Add Song Playlist",
-    //         description: "Testing song addition",
-    //         songs: [],
-    //     });
-    //     const song = new Song({ title: "New Song", genre: "Pop", releaseDate: new Date(), length: 180 });
-
-    //     // When
-    //     playlist.addSong(song);
-
-    //     // Then
-    //     expect(playlist.getSongs().length).toBe(1);
-    //     expect(playlist.getSongs()[0]).toBe(song);
-    // });
 });

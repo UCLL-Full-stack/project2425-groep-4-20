@@ -10,6 +10,7 @@ interface AlbumRowProps {
 
 const AlbumRow: React.FC<AlbumRowProps> = ({ album, onClick, isSelected }) => {
     return (
+        
         <tr
             className={`border-b hover:bg-blue-50 cursor-pointer ${isSelected ? 'bg-blue-100' : ''}`}
             onClick={() => onClick(album.id)}

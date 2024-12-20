@@ -5,31 +5,40 @@
     "getStarted": "Inloggen"
   },
   "header": {
+    "musicApp": "Muziek App",
     "home": "Home",
     "login": "Inloggen",
     "catalog": "Catalogus",
-    "addPlaylist": "Voeg afspeellijst toe",
+    "addPlaylist": "Afspeellijsten",
     "logout": "Uitloggen",
     "song": "Liedjes",
     "album": "Albums"
   },
   "addplaylist": {
-    "title": "Voeg afspeellijst toe",
+    "title": "Afspeellijsten",
     "subtitle": "Klik op een gebruiker om een afspeellijst toe te voegen",
     "search_placeholder": "Zoek afspeellijst op titel",
     "tableTitle": "Afspeellijst Titel",
     "tableUser": "Gebruiker",
     "tableEmail": "E-mail",
+    "actions": "Acties",
+    "delete": "Verwijder",
     "createTitle": "Maak een nieuwe afspeellijst",
     "playlistTitle": "Afspeellijst Titel",
     "playlistDescription": "Afspeellijst Beschrijving",
+    "userId": "Gebruiker ID",
     "username": "Gebruikersnaam",
     "email": "E-mail",
     "addButton": "Voeg afspeellijst toe",
     "errorFillFields": "Vul alle velden in om een afspeellijst toe te voegen.",
     "success": "Afspeellijst succesvol toegevoegd!",
     "error": "Het toevoegen van de afspeellijst is mislukt. Er is een fout opgetreden.",
-    "errorUser": "Selecteer een gebruiker om een afspeellijst toe te voegen."
+    "deleteSuccess": "Afspeellijst succesvol verwijderd!",
+    "errors": {
+      "titleRequired": "De titel is verplicht.",
+      "descriptionRequired": "De beschrijving is verplicht.",
+      "userIdRequired": "De gebruikers-ID is verplicht."
+    }
   },
   "catalog": {
     "title": "Afspeellijstcatalogus",
@@ -80,5 +89,38 @@
     "fillFields": "Vul alle velden in om het album toe te voegen.",
     "albumAdded": "Album succesvol toegevoegd!",
     "errorAddingAlbum": "Het toevoegen van het album is mislukt. Er is een fout opgetreden."
+  },
+
+  "loginForm": {
+    "title": "Inloggen",
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord",
+    "submit": "Inloggen",
+    "noAccount": "Heb je nog geen account?",
+    "signUp": "Registreer",
+    "errors": {
+      "usernameRequired": "Gebruikersnaam is verplicht.",
+      "passwordRequired": "Wachtwoord is verplicht.",
+      "requiredFields": "Alle velden zijn verplicht.",
+        "genericError": "Er is een fout opgetreden. Probeer het later opnieuw."
+      }
+  },
+
+  "signUp": {
+    "title": "Registreren",
+    "username": "Gebruikersnaam",
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "submit": "Registreren",
+    "alreadyAccount": "Heb je al een account?",
+    "login": "Inloggen",
+    "successMessage": "Registratie succesvol. Doorsturen naar inloggen...",
+    "errors": {
+      "usernameRequired": "Gebruikersnaam is verplicht.",
+      "emailRequired": "E-mail is verplicht.",
+      "emailInvalid": "Ongeldig e-mailadres.",
+      "passwordRequired": "Wachtwoord is verplicht.",
+      "genericError": "Er is een fout opgetreden. Probeer het later opnieuw."
+    }
   }
 }

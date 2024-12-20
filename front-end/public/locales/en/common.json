@@ -5,31 +5,39 @@
     "getStarted": "Login"
   },
   "header": {
+    "musicApp": "Music App",
     "home": "Home",
     "login": "Login",
     "catalog": "Catalog",
-    "addPlaylist": "Add Playlist",
+    "addPlaylist": "Playlists",
     "logout": "Logout",
     "song": "Songs",
     "album": "Albums"
   },
   "addplaylist": {
-    "title": "Add Playlist",
-    "subtitle": "Press on a user to add a Playlist",
+    "title": "Playlists",
     "search_placeholder": "Search Playlist by Title",
     "tableTitle": "Playlist Title",
     "tableUser": "User",
     "tableEmail": "Email",
+    "actions": "Actions",
+    "delete": "Delete",
     "createTitle": "Create a New Playlist",
     "playlistTitle": "Playlist Title",
     "playlistDescription": "Playlist Description",
+    "userId": "User ID",
     "username": "Username",
     "email": "Email",
     "addButton": "Add Playlist",
     "errorFillFields": "Please fill in all fields to create a playlist.",
     "success": "Playlist added successfully!",
     "error": "Failed to add playlist. An error occurred.",
-    "errorUser": "Please select a user to add a playlist."
+    "deleteSuccess": "Playlist deleted successfully!",
+    "errors": {
+      "titleRequired": "The title is required.",
+      "descriptionRequired": "The description is required.",
+      "userIdRequired": "The user ID is required."
+    }
   },
   "catalog": {
     "title": "Playlist Catalog",
@@ -61,30 +69,44 @@
       "album": "Album"
   }
 },
-  "addSong": {
-    "title": "Add New Song",
-    "songTitle": "Title",
-    "songGenre": "Genre",
-    "songLength": "Length (min)",
-    "addButton": "Add Song",
-    "errorFillFields": "All fields are required",
-    "success": "Song added successfully",
-    "error": "Failed to add song"
-  },
   "albumcatalog": {
         "albumCatalogTitle": "Album Catalog",
         "tableAlbumTitle": "Album Title",
         "tableSongsCount": "Number of Songs",
         "albumSongs": "Songs in the Album",
-        "songs": "Songs",
-        "addAlbumTitle": "Add New Album",
-        "albumTitlePlaceholder": "Albumtitle",
-        "artistPlaceholder": "Artist",
-        "releaseDatePlaceholder": "Release date",
-        "addButton": "Add Album",
-        "fillFields": "Fill in all fields to add the album.",
-        "albumAdded": "Album added successfully!",
-        "errorAddingAlbum": "Failed to add the album. An error occurred."
+        "songs": "Songs"
+  },
 
+  "loginForm": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Login",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "errors": {
+      "usernameRequired": "Please enter your username.",
+      "passwordRequired": "Please enter your password.",
+      "requiredFields": "All fields are required.",
+      "genericError": "An error occurred. Please try again later."
     }
+  },
+
+  "signUp": {
+    "title": "Sign Up",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign Up",
+    "alreadyAccount": "Already have an account?",
+    "login": "Log in",
+    "successMessage": "Registration successful. Redirecting to login...",
+    "errors": {
+      "usernameRequired": "Username is required.",
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Invalid email format.",
+      "passwordRequired": "Password is required.",
+      "genericError": "An error occurred. Please try again later."
+    }
+  }
 }

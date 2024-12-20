@@ -1,5 +1,3 @@
-// pages/signup.tsx
-import Head from 'next/head';
 import Header from '@components/Header';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
@@ -8,9 +6,6 @@ import SignUpForm from '@components/signup/signupForm';
 const SignUpPage: React.FC = () => {
   return (
     <>
-      <Head>
-        <title>Sign Up</title>
-      </Head>
       <Header />
       <main className="flex justify-center items-center h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200">
         <SignUpForm />

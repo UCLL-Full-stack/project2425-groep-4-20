@@ -56,22 +56,6 @@ const getUserByUsername = async (username: string) => {
     }
 };
 
-// const createUser = async ({ username, email, password, role }: UserInput): Promise<User> => {
-//     try {
-//         return await database.user.create({
-//             data: {
-//                 username,
-//                 email,
-//                 password,
-//                 role,
-//             },
-//         });
-//     } catch (error) {
-//         console.error(error);
-//         throw new Error('An error occurred while creating the user');
-//     }
-// };
-
 const createUser = async ({ username, email, password, role, playlists }: { username: string; email: string; password: string; role: Role, playlists?: Playlist[] }): Promise<User> => {
     try {
       const userPrisma = await database.user.create({
@@ -86,7 +70,7 @@ const createUser = async ({ username, email, password, role, playlists }: { user
         include: {playlists: true},
       });
 
-      return User.from(userPrisma); // Make sure User.from can handle this structure
+      return User.from(userPrisma);
     } catch (error) {
       console.error(error);
       throw new Error("Could not create user: ${error}, check server log for more details");

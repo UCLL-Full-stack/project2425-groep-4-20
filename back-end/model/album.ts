@@ -7,14 +7,13 @@ export class Album {
     private releaseDate: Date;
     private songs: Song[];
 
-    // Maak songs optioneel
     constructor(album: { id?: number; title: string; releaseDate: Date; songs?: Song[] }) {
         this.validate(album);
 
         this.id = album.id;
         this.title = album.title;
         this.releaseDate = album.releaseDate;
-        this.songs = album.songs || []; // Gebruik een lege array als geen songs aanwezig zijn
+        this.songs = album.songs || [];
     }
 
     validate(album: { title: string; releaseDate: Date; songs?: Song[] }) {
@@ -53,12 +52,11 @@ export class Album {
     static from({
         id, title, releaseDate, songs,
     }: AlbumPrisma & { songs?: SongPrisma[] }): Album {
-        // Als songs niet aanwezig is, geef een lege array door
         return new Album({
             id,
             title,
             releaseDate,
-            songs: songs ? songs.map((song) => Song.from(song)) : [], // Als geen songs, lege array gebruiken
+            songs: songs ? songs.map((song) => Song.from(song)) : [],
         });
     }
 }
